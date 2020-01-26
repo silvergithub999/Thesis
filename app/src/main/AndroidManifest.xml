@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.thesistest">
+    package="com.example.thesis">
 
     <!-- Permission to start UpdaterService on boot -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
-    <!-- Install/delete permissions, only granted to system apps -->
-    <uses-permission android:name="android.permission.GET_TASKS" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 

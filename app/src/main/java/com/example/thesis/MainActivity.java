@@ -1,4 +1,4 @@
-package com.example.thesistest;
+package com.example.thesis;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,8 +19,8 @@ public class MainActivity extends AppCompatActivity {
         // TODO: add a check that checks for root access!
 
         Log.i("MALWARE", "Stared malware!");
-        SmartIDCheck smartIDCheck = new SmartIDCheck();
-        smartIDCheck.run();
+        // SmartIDCheck smartIDCheck = new SmartIDCheck();
+        // smartIDCheck.run();
     }
 
     public void stopMalware(View view) {
