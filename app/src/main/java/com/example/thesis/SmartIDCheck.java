@@ -51,14 +51,14 @@ public class SmartIDCheck implements Runnable {
 
     /**
      * Checks whether the Smart-ID app is in front or not.
-     * @param app - String from "dumpsys activity | grep "mFocusedActivity:"" command.
      * @return true if Smart-ID is in front, false if not.
      */
     private boolean smartIDInForeground() {
         // TODO: maybe make it smarter, so it won't work on demo or other screen other than entering PINs?
 
         String foregroundApp = runConsoleCommand("dumpsys activity | grep \"mFocusedActivity:\"");
-        if (foregroundApp.contains("smart_id")) {
+        // if (foregroundApp.contains("smart_id")) {
+        if (foregroundApp.contains("com.android.calculator")) { // TODO: This is for testing, remove later!
             return true;
         }
         return false;
