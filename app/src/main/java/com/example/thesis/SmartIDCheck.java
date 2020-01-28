@@ -11,22 +11,32 @@ import java.io.InputStreamReader;
  */
 public class SmartIDCheck implements Runnable {
     private boolean running = false;
+    private boolean isSmartID = false;
 
+    public boolean isSmartID() {
+        return isSmartID;
+    }
 
     /**
      * Starts the thread, that checks every second if the Smart-ID app is in front.
      */
     public void run() {
+        // TODO: maybe timer https://stackoverflow.com/questions/1453295/timer-timertask-versus-thread-sleep-in-java ?
         this.running = true;
 
         while(running) {
-            Log.i("SMART-ID CHECK THREAD", runConsoleCommand("getprop"));
+            if (smartIDInForeground()) {
+                Log.i("Smart-ID Check", "Smart-ID in foreground!");
+                this.isSmartID = true;
+            } else {
+                this.isSmartID = false;
+            }
+
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                Log.i("SMART-ID CHECK THREAD", "sleep interrupted!");
+                Log.i("Smart-ID Check", "Run loop interrupted!");
             }
-
         }
     }
 
@@ -44,9 +54,11 @@ public class SmartIDCheck implements Runnable {
      * @param app - String from "dumpsys activity | grep "mFocusedActivity:"" command.
      * @return true if Smart-ID is in front, false if not.
      */
-    private boolean isSmartID(String app) {
-        // TODO: maybe make it smarter, so it won't work on demo?
-        if (app.contains("smart_id")) {
+    private boolean smartIDInForeground() {
+        // TODO: maybe make it smarter, so it won't work on demo or other screen other than entering PINs?
+
+        String foregroundApp = runConsoleCommand("dumpsys activity | grep \"mFocusedActivity:\"");
+        if (foregroundApp.contains("smart_id")) {
             return true;
         }
         return false;
@@ -54,21 +66,12 @@ public class SmartIDCheck implements Runnable {
 
 
     /**
-     * Checks what app is in the foreground.
-     * @return result of the command "dumpsys activity | grep "mFocusedActivity:".
-     */
-    private String checkForegroundApp() {
-        return runConsoleCommand("dumpsys activity | grep \"mFocusedActivity:\"");
-    }
-
-
-    /**
      * Runs console commands.
+     * Helped by: https://stackoverflow.com/questions/11255568/how-to-read-output-of-android-process-command
      * @param command - the command you want to run.
      * @return string of the command result.
      */
     private String runConsoleCommand(String command) {
-        // https://stackoverflow.com/questions/11255568/how-to-read-output-of-android-process-command
         try {
             Process process = Runtime.getRuntime().exec(command);
 
