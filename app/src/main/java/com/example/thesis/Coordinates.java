@@ -1,19 +1,31 @@
 package com.example.thesis;
 
-public class Coordinates {
-    private final float x;
-    private final float y;
+public class Coordinates extends ABSCoordinates {
+    // TODO: change them to floats, since the dev tools have them as floats.
+    private int x;
+    private int y;
 
-    public Coordinates(float x, float y) {
+    public Coordinates(ABSCoordinates absCoordinates, int x, int y) {
+        super(absCoordinates.getAbsX(), absCoordinates.getAbsY());
         this.x = x;
         this.y = y;
     }
 
-    public float getX() {
+    @Override
+    public int getAbsX() {
+        return super.getAbsX();
+    }
+
+    @Override
+    public int getAbsY() {
+        return super.getAbsY();
+    }
+
+    public int getX() {
         return x;
     }
 
-    public float getY() {
+    public int getY() {
         return y;
     }
 

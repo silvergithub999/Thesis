@@ -2,13 +2,11 @@ package com.example.thesis;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
-import android.view.WindowManager;
 
 public class MainActivity extends AppCompatActivity {
     private Malware malware;
@@ -49,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public String getScreenSize() {
+        // https://stackoverflow.com/questions/10991194/android-displaymetrics-returns-incorrect-screen-size-in-pixels-on-ics
         Display display = getWindowManager().getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
 
