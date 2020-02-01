@@ -10,7 +10,7 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
     private Malware malware;
-
+    private boolean malwareRunning = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,30 +23,28 @@ public class MainActivity extends AppCompatActivity {
         // TODO: add a check that checks for root access!
         // TODO: allow only one malware to run.
 
+        if (!malwareRunning) {
+            malwareRunning = true;
 
-        //Getting the screen width and height for coordinate conversion later.
-        // https://stackoverflow.com/questions/4743116/get-screen-width-and-height-in-android
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int height = displayMetrics.heightPixels;
-        int width = displayMetrics.widthPixels;
+            //Getting the screen width and height for coordinate conversion later.
+            int[] resolution = getScreenSize();
+            int width = resolution[0];
+            int height = resolution[1];
 
-        getScreenSize();
-
-        // Staring malware thread.
-        malware = new Malware(width, height);
-        Thread malwareThread = new Thread(malware);
-        malwareThread.start();
-
-
+            // Staring malware thread.
+            malware = new Malware(width, height);
+            Thread malwareThread = new Thread(malware);
+            malwareThread.start();
+        }
     }
 
     public void stopMalware(View view) {
         malware.stop();
+        malwareRunning = false;
     }
 
 
-    public String getScreenSize() {
+    public int[] getScreenSize() {
         // https://stackoverflow.com/questions/10991194/android-displaymetrics-returns-incorrect-screen-size-in-pixels-on-ics
         Display display = getWindowManager().getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
@@ -56,10 +54,7 @@ public class MainActivity extends AppCompatActivity {
         int width = metrics.widthPixels;
         int height = metrics.heightPixels;
 
-        Log.i("Height", String.valueOf(height));
-        Log.i("Width", String.valueOf(width));
-
-        return null;
+        return new int[]{width, height};
     }
 
 }

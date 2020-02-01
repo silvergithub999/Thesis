@@ -11,6 +11,12 @@ public class Coordinates extends ABSCoordinates {
         this.y = y;
     }
 
+    public Coordinates(int absX, int absY, float widthMultiplier, float heightMultiplier) {
+        super(absX, absY);
+        this.x = x;
+        this.y = y;
+    }
+
     @Override
     public int getAbsX() {
         return super.getAbsX();
