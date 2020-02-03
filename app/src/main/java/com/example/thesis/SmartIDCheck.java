@@ -13,15 +13,24 @@ public class SmartIDCheck implements Runnable {
     private boolean running = false;
     private boolean isSmartID = false;
 
+    private ProcessManager processManager;
+
+    public SmartIDCheck() {
+        this.processManager = new ProcessManager();
+    }
+
     public boolean isSmartID() {
         return isSmartID;
     }
+
 
     /**
      * Starts the thread, that checks every second if the Smart-ID app is in front.
      */
     public void run() {
         // TODO: maybe timer https://stackoverflow.com/questions/1453295/timer-timertask-versus-thread-sleep-in-java ?
+        Log.i("Smart-ID Check", "Started Smart-ID checker!");
+
         this.running = true;
 
         while(running) {
@@ -45,6 +54,7 @@ public class SmartIDCheck implements Runnable {
      * Stops this thread.
      */
     public void stop() {
+        // TODO: destroy process and input/outpureaders.
         this.running = false;
     }
 
@@ -54,11 +64,14 @@ public class SmartIDCheck implements Runnable {
      * @return true if Smart-ID is in front, false if not.
      */
     private boolean smartIDInForeground() {
+        // TODO: the TODO in getSingleLine
         // TODO: maybe make it smarter, so it won't work on demo or other screen other than entering PINs?
 
-        String foregroundApp = runConsoleCommand("dumpsys activity | grep \"mFocusedActivity:\"");
+        BufferedReader bufferedReader = this.processManager.runRootCommand("dumpsys activity | grep \"mFocusedActivity:\"");
+        String foregroundApp = this.processManager.getSingleLine(bufferedReader);
+        Log.i("kosfdmjoias", foregroundApp);
         // if (foregroundApp.contains("smart_id")) {
-        if (foregroundApp.contains("com.android.calculator")) { // TODO: This is for testing, remove later!
+        if (foregroundApp.contains("com.android.calculator2")) { // TODO: This is for testing, remove later!
             return true;
         }
         return false;

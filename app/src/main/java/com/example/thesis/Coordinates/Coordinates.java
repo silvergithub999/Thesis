@@ -1,4 +1,4 @@
-package com.example.thesis;
+package com.example.thesis.Coordinates;
 
 public class Coordinates extends ABSCoordinates {
     // TODO: change them to floats, since the dev tools have them as floats.

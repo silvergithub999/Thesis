@@ -1,4 +1,4 @@
-package com.example.thesis;
+package com.example.thesis.Coordinates;
 
 public class ABSCoordinates {
     private final int absX;
