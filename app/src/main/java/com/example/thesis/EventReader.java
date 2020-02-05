@@ -15,35 +15,36 @@ import java.util.Queue;
 
 public class EventReader implements Runnable {
     // TODO: comments and rename things better (for example coords and abscoords)...
-    // TODO: multitouch events.
-    // TODO: rename logs
+    // TODO: multitouch events and maybe holding events.
 
     private ProcessManager processManager;
 
     private Deque<Event> touchEvents;
 
-    private boolean running = false;
+    private boolean doStop = false;
 
     public EventReader() {
         this.processManager = new ProcessManager();
+        this.touchEvents = new LinkedList<>();
     }
 
 
-    public boolean isRunning() {
-        return running;
+    public synchronized void doStop() {
+        // TODO: destroy process and input/outpureaders.
+        this.doStop = true;
+        Log.i("Event Reader", "Stopped EventReader!");
+    }
+
+
+    private synchronized boolean keepRunning() {
+        return !this.doStop;
     }
 
 
     @Override
     public void run() {
-        if (!running) {
-            captureTouchEvents();
-            Log.i("Event Reader", "Starting EventReader!");
-
-            if (touchEvents.size() % 4 == 0) {
-                Log.i("Event Reader", "Happened events: " + touchEvents.toString());
-            }
-        }
+        Log.i("Event Reader", "Starting EventReader!");
+        captureTouchEvents();
     }
 
 
@@ -54,25 +55,20 @@ public class EventReader implements Runnable {
      * https://stackoverflow.com/questions/18570962/permission-denied-on-rooted-android-phone-with-getevent
      */
     private void captureTouchEvents() {
-        running = true;
-
         // Running command.
         BufferedReader bufferedReader = processManager.runRootCommand("od /dev/input/event1");
 
         // Reading result.
         String line;
-        while (running) {
+        while (keepRunning()) {
             Queue<String> eventLines = readEvent(bufferedReader);
             Event event = getEvent(eventLines);
             touchEvents.add(event);
             Log.i("Event Reader", "Captured touch: " + event);
+            if (touchEvents.size() % 4 == 0) {
+                Log.i("Event Reader", "Happened events: " + touchEvents.toString());
+            }
         }
-    }
-
-
-    public void stop() {
-        running = false;
-        Log.i("Event Reader", "Stopped EventReader!");
     }
 
 
@@ -172,9 +168,11 @@ public class EventReader implements Runnable {
 
     public Event_MultipleTaps getEventMULTIPLE_TAPS(Queue<String> eventLines) {
         Deque<ABSCoordinates> touchEventABSCoordinates = new LinkedList<>();
-        Event_MultipleTaps event = (Event_MultipleTaps) touchEvents.removeLast();
-        event.tap();
-        return event;
+        Event event = touchEvents.removeLast();
+        Deque<ABSCoordinates> absCoordinates = event.getAbsCoordinates();
+        absCoordinates.add(absCoordinates.peek());
+        Event_MultipleTaps event_multipleTaps = new Event_MultipleTaps(absCoordinates);
+        return event_multipleTaps;
     }
 
 

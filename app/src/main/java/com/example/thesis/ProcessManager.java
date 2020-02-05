@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProcessManager {
+    // TODO: maybe move bufferedReaders into the classes themselves and not here, keep only processes here.
+
     private List<BufferedReader> allBufferedReadersInput;
     private List<BufferedReader> allBufferedReadersErrors;
     private List<Process> allProcesses;
@@ -43,14 +45,12 @@ public class ProcessManager {
     public BufferedReader runRootCommand(String command) {
         try {
             // Starting process as su.
-            ProcessBuilder pb = new ProcessBuilder();
-            pb.command("/system/bin/su");
-            Process process = pb.start();
+            Process process = getRootProcess();
+
 
             // Sending the command.
             OutputStream outputStream = process.getOutputStream();
-            outputStream.write((command + " \n").getBytes());
-            outputStream.flush();
+            runRootCommand(outputStream, command);
 
             // Buffered readers of outputs and error outputs.
             BufferedReader bufferedReaderInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -68,11 +68,26 @@ public class ProcessManager {
     }
 
 
-    /**
-     * Useful when the reuslt is going to be jsut a single line.
-     */
-    public String getSingleLine(BufferedReader bufferedReader) {
-        //TODO: close process and bufferedReader.
-        return "sdap+üdlspa";
+    public Process getRootProcess() {
+        try {
+            ProcessBuilder pb = new ProcessBuilder();
+            pb.command("/system/bin/su");
+            Process process = pb.start();
+            allProcesses.add(process);
+            return process;
+        } catch (Exception error) {
+            Log.e("Process Manager", "Error running root process: " + error.getMessage());
+        }
+        return null;
+    }
+
+
+    public void runRootCommand(OutputStream outputStream, String command) {
+        try {
+            outputStream.write((command + " \n").getBytes());
+            outputStream.flush();
+        } catch (Exception error) {
+            Log.e("Process Manager", "Error sending command with output stream: " + error.getMessage());
+        }
     }
 }

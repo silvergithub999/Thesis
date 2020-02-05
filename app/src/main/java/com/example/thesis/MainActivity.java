@@ -7,6 +7,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private Malware malware;
@@ -32,15 +33,19 @@ public class MainActivity extends AppCompatActivity {
             int height = resolution[1];
 
             // Staring malware thread.
-            malware = new Malware(width, height);
-            Thread malwareThread = new Thread(malware);
+            malware = new Malware();
+            Thread malwareThread = new Thread(malware, "Malware Thread");  // TODO: name all threads
             malwareThread.start();
+            Toast.makeText(this, "Started malware!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Malware is already running!", Toast.LENGTH_SHORT).show();
         }
     }
 
     public void stopMalware(View view) {
-        malware.stop();
+        malware.doStop();
         malwareRunning = false;
+        Toast.makeText(this, "Stopped malware!", Toast.LENGTH_SHORT).show();
     }
 
 

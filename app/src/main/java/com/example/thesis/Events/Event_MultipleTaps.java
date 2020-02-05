@@ -20,13 +20,6 @@ public class Event_MultipleTaps implements Event {
 
     }
 
-    public void tap() {
-        if (absCoordinates.size() != 0) {
-            // TODO: check that not the same object, if it is then copy of object
-            absCoordinates.add(absCoordinates.getLast());
-        }
-    }
-
     @Override
     public String toString() {
         return "Multiple Tap Event: " + absCoordinates;

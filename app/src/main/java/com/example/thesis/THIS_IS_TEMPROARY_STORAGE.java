@@ -23,17 +23,17 @@ public class THIS_IS_TEMPROARY_STORAGE {
         heightMultiplier = screenY / absoluteY;
     }
 
-    public Coordinates convertToScreenCoordinates(ABSCoordinates absCoordinates) {
+    public ScreenCoordinates convertToScreenCoordinates(ABSCoordinates absCoordinates) {
         int screenX = Math.round(absCoordinates.getAbsX() * widthMultiplier);
         int screenY = Math.round(absCoordinates.getAbsY() * heightMultiplier);
-        Coordinates screenCoordinates = new Coordinates(absCoordinates, screenX, screenY);
+        ScreenCoordinates screenCoordinates = new ScreenCoordinates(absCoordinates, screenX, screenY);
         return screenCoordinates;
     }
 
 
     // Emtpies the input deque
-    public Deque<Coordinates> convertToScreenCoordinates(Deque<ABSCoordinates> absCoordinates) {
-        Deque<Coordinates> coordinates = new LinkedList<>();
+    public Deque<ScreenCoordinates> convertToScreenCoordinates(Deque<ABSCoordinates> absCoordinates) {
+        Deque<ScreenCoordinates> coordinates = new LinkedList<>();
 
         while(!absCoordinates.isEmpty()) {
             ABSCoordinates abs = absCoordinates.poll();

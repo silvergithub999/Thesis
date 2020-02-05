@@ -2,6 +2,9 @@ package com.example.thesis.Events;
 
 import com.example.thesis.Coordinates.ABSCoordinates;
 
+import java.util.Deque;
+import java.util.LinkedList;
+
 public class Event_Normal implements Event {
     private ABSCoordinates absCoordinates;
 
@@ -9,8 +12,10 @@ public class Event_Normal implements Event {
         this.absCoordinates = absCoordinates;
     }
 
-    public ABSCoordinates getAbsCoordinates() {
-        return absCoordinates;
+    public Deque<ABSCoordinates> getAbsCoordinates() {
+        Deque<ABSCoordinates> deque = new LinkedList<>();
+        deque.add(absCoordinates);
+        return deque;
     }
 
     @Override

@@ -3,104 +3,58 @@ package com.example.thesis;
 import android.util.Log;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 
 /**
  * This class checks, if Smart-ID is the app in front.
  */
-public class SmartIDCheck implements Runnable {
-    private boolean running = false;
-    private boolean isSmartID = false;
-
+public class SmartIDCheck {
     private ProcessManager processManager;
+
+    private Process rootProcess;
+    private OutputStream outputStream;
+    private BufferedReader bufferedReaderInput;
+    private BufferedReader bufferedReaderErrors;
+
 
     public SmartIDCheck() {
         this.processManager = new ProcessManager();
-    }
+        this.rootProcess = processManager.getRootProcess();
+        this.outputStream = rootProcess.getOutputStream();
 
-    public boolean isSmartID() {
-        return isSmartID;
-    }
-
-
-    /**
-     * Starts the thread, that checks every second if the Smart-ID app is in front.
-     */
-    public void run() {
-        // TODO: maybe timer https://stackoverflow.com/questions/1453295/timer-timertask-versus-thread-sleep-in-java ?
-        Log.i("Smart-ID Check", "Started Smart-ID checker!");
-
-        this.running = true;
-
-        while(running) {
-            if (smartIDInForeground()) {
-                Log.i("Smart-ID Check", "Smart-ID in foreground!");
-                this.isSmartID = true;
-            } else {
-                this.isSmartID = false;
-            }
-
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                Log.i("Smart-ID Check", "Run loop interrupted!");
-            }
-        }
-    }
-
-
-    /**
-     * Stops this thread.
-     */
-    public void stop() {
-        // TODO: destroy process and input/outpureaders.
-        this.running = false;
+        this.bufferedReaderInput = new BufferedReader(new InputStreamReader(rootProcess.getInputStream()));
+        this.bufferedReaderErrors = new BufferedReader(new InputStreamReader(rootProcess.getErrorStream()));  // TODO: make it read errors aswell
     }
 
 
     /**
      * Checks whether the Smart-ID app is in front or not.
      * @return true if Smart-ID is in front, false if not.
+     * // TODO: for testing, currently is calculator.
      */
-    private boolean smartIDInForeground() {
-        // TODO: the TODO in getSingleLine
+    public boolean isSmartIDInForeground() {
         // TODO: maybe make it smarter, so it won't work on demo or other screen other than entering PINs?
 
-        BufferedReader bufferedReader = this.processManager.runRootCommand("dumpsys activity | grep \"mFocusedActivity:\"");
-        String foregroundApp = this.processManager.getSingleLine(bufferedReader);
-        Log.i("kosfdmjoias", foregroundApp);
+        String foregroundApp = getAppInForeground();
+
         // if (foregroundApp.contains("smart_id")) {
-        if (foregroundApp.contains("com.android.calculator2")) { // TODO: This is for testing, remove later!
+        if (foregroundApp.contains("com.android.calculator")) { // TODO: This is for testing, remove later!
             return true;
         }
         return false;
     }
 
 
-    /**
-     * Runs console commands.
-     * Helped by: https://stackoverflow.com/questions/11255568/how-to-read-output-of-android-process-command
-     * @param command - the command you want to run.
-     * @return string of the command result.
-     */
-    private String runConsoleCommand(String command) {
+
+    private String getAppInForeground() {
+        // https://stackoverflow.com/questions/28543776/android-shell-get-foreground-app-package-name
         try {
-            Process process = Runtime.getRuntime().exec(command);
-
-            InputStreamReader inputStreamReader = new InputStreamReader(process.getInputStream());
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
-            StringBuilder log = new StringBuilder();
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                log.append(line + "\n");
-            }
-            Log.i("App in front", log.toString());
-            return log.toString();
-        } catch (IOException error) {
-            Log.e("Smart-ID Check", error.getMessage());
-            return "";
+            this.processManager.runRootCommand(outputStream, "dumpsys window windows | grep \"mCurrentFocus\"");
+            return bufferedReaderInput.readLine();
+        } catch (Exception error) {
+            Log.e("Smart-ID Check", "Error reading the dumpsys lines: " + error.getMessage());
         }
+        return null;
     }
 }
