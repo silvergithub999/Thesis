@@ -62,12 +62,14 @@ public class EventReader implements Runnable {
         String line;
         while (keepRunning()) {
             Queue<String> eventLines = readEvent(bufferedReader);
-            Event event = getEvent(eventLines);
-            touchEvents.add(event);
-            Log.i("Event Reader", "Captured touch: " + event);
-            if (touchEvents.size() % 4 == 0) {
-                Log.i("Event Reader", "Happened events: " + touchEvents.toString());
+            Event event =  eventLines.size() > 3 ? getEvent(eventLines) : null;
+            if (event != null) {
+                touchEvents.add(event);
+                Log.i("Event Reader", "Captured touch: " + event);
+            } else {
+                Log.i("Event Reader", "Ignoring multi touch event!");
             }
+
         }
     }
 
@@ -96,7 +98,8 @@ public class EventReader implements Runnable {
     private EventType checkEventType(Queue<String> eventLines) {
         boolean isX = false;
         boolean isY = false;
-        boolean dragging = false;
+
+        //Checking if it is multi touch event.
 
         // Checking if there are x and y coordinates.
         while(!eventLines.isEmpty()) {
@@ -117,15 +120,17 @@ public class EventReader implements Runnable {
             String[] lineSplit = line.split("  ");
 
             if (lineSplit[6].equals("000065") || lineSplit[6].equals("000066")) {
-                dragging = true;
+                return EventType.DRAGGING;
+            } else if (lineSplit[6].equals("000057")) {
+                // Multi touch event -> ABS_MT_SLOT = 000057
+                return EventType.MULTI_TOUCH;
+
             }
         }
 
         // Returing what type of event it was by which coordinates were present.
-        if (isX && isY && !dragging) {
+        if (isX && isY) {
             return EventType.NORMAL;
-        } else if (dragging) {
-            return EventType.DRAGGING;
         } else {
             return EventType.MULTIPLE_TAPS;
         }
@@ -139,8 +144,11 @@ public class EventReader implements Runnable {
             return getEventNORMAL(eventLines);
         } else if (eventType == EventType.MULTIPLE_TAPS) {
             return getEventMULTIPLE_TAPS(eventLines);
-        } else {
+        } else if (eventType == EventType.DRAGGING){
             return getEventDRAGGING(eventLines);
+        } else {
+            // MULTI_TOUCH
+            return null;
         }
     }
 
@@ -215,5 +223,6 @@ public class EventReader implements Runnable {
 enum EventType {
     NORMAL,
     MULTIPLE_TAPS,
-    DRAGGING
+    DRAGGING,
+    MULTI_TOUCH
 }
