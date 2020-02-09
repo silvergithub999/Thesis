@@ -24,4 +24,9 @@ public class Event_Dragging implements Event {
     public String toString() {
         return "Dragging Event: " + absCoordinates;
     }
+
+    @Override
+    public Event makeCopy() {
+        return new Event_Dragging(getAbsCoordinates());
+    }
 }

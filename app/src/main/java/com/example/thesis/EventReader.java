@@ -5,7 +5,6 @@ import android.util.Log;
 import com.example.thesis.Coordinates.ABSCoordinates;
 import com.example.thesis.Events.Event;
 import com.example.thesis.Events.Event_Dragging;
-import com.example.thesis.Events.Event_MultipleTaps;
 import com.example.thesis.Events.Event_Normal;
 
 import java.io.BufferedReader;
@@ -66,6 +65,7 @@ public class EventReader implements Runnable {
             if (event != null) {
                 touchEvents.add(event);
                 Log.i("Event Reader", "Captured touch: " + event);
+                event.sendEvent();
             } else {
                 Log.i("Event Reader", "Ignoring multi touch event!");
             }
@@ -174,13 +174,10 @@ public class EventReader implements Runnable {
     }
 
 
-    public Event_MultipleTaps getEventMULTIPLE_TAPS(Queue<String> eventLines) {
-        Deque<ABSCoordinates> touchEventABSCoordinates = new LinkedList<>();
-        Event event = touchEvents.removeLast();
-        Deque<ABSCoordinates> absCoordinates = event.getAbsCoordinates();
-        absCoordinates.add(absCoordinates.peek());
-        Event_MultipleTaps event_multipleTaps = new Event_MultipleTaps(absCoordinates);
-        return event_multipleTaps;
+    public Event_Normal getEventMULTIPLE_TAPS(Queue<String> eventLines) {
+        Event event = touchEvents.peek();
+        Event_Normal eventCopy = (Event_Normal) event.makeCopy();
+        return eventCopy;
     }
 
 

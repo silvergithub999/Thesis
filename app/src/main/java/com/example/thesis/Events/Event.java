@@ -8,4 +8,6 @@ public interface Event {
     public void sendEvent();
 
     public Deque<ABSCoordinates> getAbsCoordinates();
+
+    public Event makeCopy();
 }

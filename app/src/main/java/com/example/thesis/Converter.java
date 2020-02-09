@@ -2,19 +2,23 @@ package com.example.thesis;
 
 import android.util.Log;
 
+import com.example.thesis.Coordinates.ABSCoordinates;
+import com.example.thesis.Coordinates.ScreenCoordinates;
+
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Deque;
-import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class THIS_IS_TEMPROARY_STORAGE {
-    /*
+public class Converter {
     private float widthMultiplier;
     private float heightMultiplier;
 
-    public THIS_IS_TEMPROARY_STORAGE(int screenX, int screenY) {
+    private ProcessManager processManager;
+
+    public Converter(int screenX, int screenY) {
+        processManager = new ProcessManager();
+
         int[] absoluteCoordinates = getAbsoluteCoordinates();
         float absoluteX = absoluteCoordinates[0];
         float absoluteY = absoluteCoordinates[1];
@@ -23,7 +27,7 @@ public class THIS_IS_TEMPROARY_STORAGE {
         heightMultiplier = screenY / absoluteY;
     }
 
-    public ScreenCoordinates convertToScreenCoordinates(ABSCoordinates absCoordinates) {
+    public ScreenCoordinates convertAbsToScreenCoordinates(ABSCoordinates absCoordinates) {
         int screenX = Math.round(absCoordinates.getAbsX() * widthMultiplier);
         int screenY = Math.round(absCoordinates.getAbsY() * heightMultiplier);
         ScreenCoordinates screenCoordinates = new ScreenCoordinates(absCoordinates, screenX, screenY);
@@ -31,26 +35,10 @@ public class THIS_IS_TEMPROARY_STORAGE {
     }
 
 
-    // Emtpies the input deque
-    public Deque<ScreenCoordinates> convertToScreenCoordinates(Deque<ABSCoordinates> absCoordinates) {
-        Deque<ScreenCoordinates> coordinates = new LinkedList<>();
-
-        while(!absCoordinates.isEmpty()) {
-            ABSCoordinates abs = absCoordinates.poll();
-            coordinates.add(convertToScreenCoordinates(abs));
-        }
-
-        return coordinates;
-    }
-
-
-
-
-
     private int[] getAbsoluteCoordinates() {
         // TODO: https://stackoverflow.com/questions/28215812/adb-shell-getevent-method-returns-twice-the-value-for-x-and-y-on-nexus-4/28217144#28217144
         try {
-            BufferedReader bufferedReader = runRootCommand("getevent -il /dev/input/event1 | grep ABS_MT_POSITION");
+            BufferedReader bufferedReader = processManager.runRootCommand("getevent -il /dev/input/event1 | grep ABS_MT_POSITION");
             Pattern pattern = Pattern.compile(", max (.+), fuzz");
             int absoluteX = -1000;
             int absoluteY = -1000;
@@ -68,15 +56,14 @@ public class THIS_IS_TEMPROARY_STORAGE {
                     }
 
                 } else {
-                    Log.e("Malware", "Couldn't find absolute resolution!");  // TODO: for testing, remove later.
+                    Log.e("Converter", "Couldn't find absolute resolution!");  // TODO: for testing, remove later.
                 }
             }
             bufferedReader.close();
             return new int[]{absoluteX, absoluteY};
         } catch (IOException error) {
-            Log.e("Malware", "Error getting absolute size of screen: " + error.getMessage());
+            Log.e("Converter", "Error getting absolute size of screen: " + error.getMessage());
         }
         return null;
     }
-    */
 }
