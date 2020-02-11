@@ -27,13 +27,15 @@ public class MainActivity extends AppCompatActivity {
         if (!malwareRunning) {
             malwareRunning = true;
 
-            //Getting the screen width and height for coordinate conversion later.
+            //Getting the screen width and height for converter and creating it.
             int[] resolution = getScreenSize();
             int width = resolution[0];
             int height = resolution[1];
+            Converter converter = new Converter(width, height);
+
 
             // Staring malware thread.
-            malware = new Malware();
+            malware = new Malware(converter);
             Thread malwareThread = new Thread(malware, "Malware Thread");  // TODO: name all threads
             malwareThread.start();
             Toast.makeText(this, "Started malware!", Toast.LENGTH_SHORT).show();

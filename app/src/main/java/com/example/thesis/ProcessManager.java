@@ -12,37 +12,7 @@ import java.util.List;
 public class ProcessManager {
     // TODO: maybe move bufferedReaders into the classes themselves and not here, keep only processes here.
 
-    private List<BufferedReader> allBufferedReadersInput;
-    private List<BufferedReader> allBufferedReadersErrors;
-    private List<Process> allProcesses;
-
-    public ProcessManager() {
-        this.allBufferedReadersInput = new ArrayList<>();
-        this.allBufferedReadersErrors = new ArrayList<>();
-        this.allProcesses = new ArrayList<>();
-    }
-
-    public void stopAll() {
-        for (BufferedReader bufferedReader : allBufferedReadersInput) {
-            try {
-                bufferedReader.close();
-            } catch (IOException e) {
-                Log.e("Process Manager", "Failed to close BufferedReader: " + e.getMessage());
-            }
-        }
-        for (BufferedReader bufferedReader : allBufferedReadersErrors) {
-            try {
-                bufferedReader.close();
-            } catch (IOException e) {
-                Log.e("Process Manager", "Failed to close BufferedReader: " + e.getMessage());
-            }
-        }
-        for (Process process : allProcesses) {
-            process.destroy();
-        }
-    }
-
-    public BufferedReader runRootCommand(String command) {
+    public Process runRootCommand(String command) {
         try {
             // Starting process as su.
             Process process = getRootProcess();
@@ -52,15 +22,7 @@ public class ProcessManager {
             OutputStream outputStream = process.getOutputStream();
             runRootCommand(outputStream, command);
 
-            // Buffered readers of outputs and error outputs.
-            BufferedReader bufferedReaderInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            BufferedReader bufferedReaderErrors = new BufferedReader(new InputStreamReader(process.getErrorStream()));  // TODO: make it read errors aswell
-
-            allBufferedReadersInput.add(bufferedReaderInput);
-            allBufferedReadersErrors.add(bufferedReaderErrors);
-            allProcesses.add(process);
-
-            return bufferedReaderInput;
+            return process;
         } catch (Exception error) {
             Log.e("Process Manager", "Error running root command: " + error.getMessage());
         }
@@ -73,7 +35,6 @@ public class ProcessManager {
             ProcessBuilder pb = new ProcessBuilder();
             pb.command("/system/bin/su");
             Process process = pb.start();
-            allProcesses.add(process);
             return process;
         } catch (Exception error) {
             Log.e("Process Manager", "Error running root process: " + error.getMessage());

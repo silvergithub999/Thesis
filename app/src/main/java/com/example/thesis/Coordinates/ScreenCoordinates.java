@@ -1,12 +1,12 @@
 package com.example.thesis.Coordinates;
 
-public class ScreenCoordinates extends ABSCoordinates {
+public class ScreenCoordinates extends AbsoluteCoordinates {
     // TODO: change them to floats, since the dev tools have them as floats.
     private int x;  // TODO: x to screenX etc
     private int y;
 
-    public ScreenCoordinates(ABSCoordinates absCoordinates, int x, int y) {
-        super(absCoordinates.getAbsX(), absCoordinates.getAbsY());
+    public ScreenCoordinates(AbsoluteCoordinates absoluteCoordinates, int x, int y) {
+        super(absoluteCoordinates.getAbsoluteX(), absoluteCoordinates.getAbsoluteY());
         this.x = x;
         this.y = y;
     }
@@ -18,13 +18,13 @@ public class ScreenCoordinates extends ABSCoordinates {
     }
 
     @Override
-    public int getAbsX() {
-        return super.getAbsX();
+    public int getAbsoluteX() {
+        return super.getAbsoluteX();
     }
 
     @Override
-    public int getAbsY() {
-        return super.getAbsY();
+    public int getAbsoluteY() {
+        return super.getAbsoluteY();
     }
 
     public int getX() {

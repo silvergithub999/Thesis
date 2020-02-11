@@ -13,7 +13,6 @@ public class SmartIDCheck {
     private ProcessManager processManager;
 
     private Process rootProcess;
-    private OutputStream outputStream;
     private BufferedReader bufferedReaderInput;
     private BufferedReader bufferedReaderErrors;
 
@@ -21,7 +20,6 @@ public class SmartIDCheck {
     public SmartIDCheck() {
         this.processManager = new ProcessManager();
         this.rootProcess = processManager.getRootProcess();
-        this.outputStream = rootProcess.getOutputStream();
 
         this.bufferedReaderInput = new BufferedReader(new InputStreamReader(rootProcess.getInputStream()));
         this.bufferedReaderErrors = new BufferedReader(new InputStreamReader(rootProcess.getErrorStream()));  // TODO: make it read errors aswell
@@ -29,9 +27,17 @@ public class SmartIDCheck {
 
 
     /**
+     * Destroys the root process.
+     */
+    public void doStop() {
+        rootProcess.destroy();
+    }
+
+
+    /**
      * Checks whether the Smart-ID app is in front or not.
      * @return true if Smart-ID is in front, false if not.
-     * // TODO: for testing, currently is calculator.
+     * // TODO: for testing currently is calculator.
      */
     public boolean isSmartIDInForeground() {
         // TODO: maybe make it smarter, so it won't work on demo or other screen other than entering PINs?
@@ -50,7 +56,7 @@ public class SmartIDCheck {
     private String getAppInForeground() {
         // https://stackoverflow.com/questions/28543776/android-shell-get-foreground-app-package-name
         try {
-            this.processManager.runRootCommand(outputStream, "dumpsys window windows | grep \"mCurrentFocus\"");
+            this.processManager.runRootCommand(rootProcess.getOutputStream(), "dumpsys window windows | grep \"mCurrentFocus\"");
             return bufferedReaderInput.readLine();
         } catch (Exception error) {
             Log.e("Smart-ID Check", "Error reading the dumpsys lines: " + error.getMessage());

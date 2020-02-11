@@ -2,11 +2,12 @@ package com.example.thesis;
 
 import android.util.Log;
 
-import com.example.thesis.Coordinates.ABSCoordinates;
+import com.example.thesis.Coordinates.AbsoluteCoordinates;
 import com.example.thesis.Coordinates.ScreenCoordinates;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,6 +16,10 @@ public class Converter {
     private float heightMultiplier;
 
     private ProcessManager processManager;
+
+    private Process rootProcess;
+    private BufferedReader bufferedReaderInput;
+    private BufferedReader bufferedReaderErrors;
 
     public Converter(int screenX, int screenY) {
         processManager = new ProcessManager();
@@ -27,10 +32,10 @@ public class Converter {
         heightMultiplier = screenY / absoluteY;
     }
 
-    public ScreenCoordinates convertAbsToScreenCoordinates(ABSCoordinates absCoordinates) {
-        int screenX = Math.round(absCoordinates.getAbsX() * widthMultiplier);
-        int screenY = Math.round(absCoordinates.getAbsY() * heightMultiplier);
-        ScreenCoordinates screenCoordinates = new ScreenCoordinates(absCoordinates, screenX, screenY);
+    public ScreenCoordinates convertAbsToScreenCoordinates(AbsoluteCoordinates absoluteCoordinates) {
+        int screenX = Math.round(absoluteCoordinates.getAbsoluteX() * widthMultiplier);
+        int screenY = Math.round(absoluteCoordinates.getAbsoluteY() * heightMultiplier);
+        ScreenCoordinates screenCoordinates = new ScreenCoordinates(absoluteCoordinates, screenX, screenY);
         return screenCoordinates;
     }
 
@@ -38,20 +43,23 @@ public class Converter {
     private int[] getAbsoluteCoordinates() {
         // TODO: https://stackoverflow.com/questions/28215812/adb-shell-getevent-method-returns-twice-the-value-for-x-and-y-on-nexus-4/28217144#28217144
         try {
-            BufferedReader bufferedReader = processManager.runRootCommand("getevent -il /dev/input/event1 | grep ABS_MT_POSITION");
+            rootProcess = processManager.runRootCommand("getevent -il /dev/input/event1 | grep ABS_MT_POSITION");
+            bufferedReaderInput = new BufferedReader(new InputStreamReader(rootProcess.getInputStream()));
+            bufferedReaderErrors = new BufferedReader(new InputStreamReader(rootProcess.getErrorStream()));
+
+
             Pattern pattern = Pattern.compile(", max (.+), fuzz");
             int absoluteX = -1000;
             int absoluteY = -1000;
 
             String line;
-            while ((line = bufferedReader.readLine()) != null) {
+            while ((line = bufferedReaderInput.readLine()) != null) {
                 Matcher matcher = pattern.matcher(line);
                 if (matcher.find()) {
                     if (line.contains("ABS_MT_POSITION_X")) {
                         absoluteX = Integer.parseInt(matcher.group(1));
                     } else {
                         absoluteY = Integer.parseInt(matcher.group(1));
-                        bufferedReader.close();
                         return new int[]{absoluteX, absoluteY};
                     }
 
@@ -59,7 +67,7 @@ public class Converter {
                     Log.e("Converter", "Couldn't find absolute resolution!");  // TODO: for testing, remove later.
                 }
             }
-            bufferedReader.close();
+            rootProcess.destroy();
             return new int[]{absoluteX, absoluteY};
         } catch (IOException error) {
             Log.e("Converter", "Error getting absolute size of screen: " + error.getMessage());

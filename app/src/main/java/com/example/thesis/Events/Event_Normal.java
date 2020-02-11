@@ -1,21 +1,21 @@
 package com.example.thesis.Events;
 
-import com.example.thesis.Coordinates.ABSCoordinates;
+import com.example.thesis.Coordinates.AbsoluteCoordinates;
 import com.example.thesis.ProcessManager;
 
 import java.util.Deque;
 import java.util.LinkedList;
 
 public class Event_Normal implements Event {
-    private ABSCoordinates absCoordinates;
+    private AbsoluteCoordinates absoluteCoordinates;
 
-    public Event_Normal(ABSCoordinates absCoordinates) {
-        this.absCoordinates = absCoordinates;
+    public Event_Normal(AbsoluteCoordinates absoluteCoordinates) {
+        this.absoluteCoordinates = absoluteCoordinates;
     }
 
-    public Deque<ABSCoordinates> getAbsCoordinates() {
-        Deque<ABSCoordinates> deque = new LinkedList<>();
-        deque.add(absCoordinates);
+    public Deque<AbsoluteCoordinates> getAbsoluteCoordinates() {
+        Deque<AbsoluteCoordinates> deque = new LinkedList<>();
+        deque.add(absoluteCoordinates);
         return deque;
     }
 
@@ -27,11 +27,11 @@ public class Event_Normal implements Event {
 
     @Override
     public String toString() {
-        return "Normal Event: " + absCoordinates;
+        return "Normal Event: " + absoluteCoordinates;
     }
 
     @Override
     public Event makeCopy() {
-        return new Event_Normal(getAbsCoordinates().peek());
+        return new Event_Normal(getAbsoluteCoordinates().peek());
     }
 }

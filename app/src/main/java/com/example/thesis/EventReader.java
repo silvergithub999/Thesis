@@ -2,23 +2,31 @@ package com.example.thesis;
 
 import android.util.Log;
 
-import com.example.thesis.Coordinates.ABSCoordinates;
+import com.example.thesis.Coordinates.AbsoluteCoordinates;
 import com.example.thesis.Events.Event;
 import com.example.thesis.Events.Event_Dragging;
 import com.example.thesis.Events.Event_Normal;
 
 import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class EventReader implements Runnable {
     // TODO: comments and rename things better (for example coords and abscoords)...
-    // TODO: multitouch events and maybe holding events.
+
+    private Deque<Event> touchEvents;
 
     private ProcessManager processManager;
 
-    private Deque<Event> touchEvents;
+    private Process rootProcess;
+
+    // TODO: check, that they close when rootProcess is closed
+    private BufferedReader bufferedReaderInput;
+    private BufferedReader bufferedReaderErrors;
+
+
 
     private boolean doStop = false;
 
@@ -31,6 +39,7 @@ public class EventReader implements Runnable {
     public synchronized void doStop() {
         // TODO: destroy process and input/outpureaders.
         this.doStop = true;
+        rootProcess.destroy();
         Log.i("Event Reader", "Stopped EventReader!");
     }
 
@@ -55,12 +64,15 @@ public class EventReader implements Runnable {
      */
     private void captureTouchEvents() {
         // Running command.
-        BufferedReader bufferedReader = processManager.runRootCommand("od /dev/input/event1");
+        rootProcess = processManager.runRootCommand("od /dev/input/event1");
+        bufferedReaderInput = new BufferedReader(new InputStreamReader(rootProcess.getInputStream()));
+        bufferedReaderErrors = new BufferedReader(new InputStreamReader(rootProcess.getErrorStream()));
+        // TODO: make it read errors aswell
 
         // Reading result.
         String line;
         while (keepRunning()) {
-            Queue<String> eventLines = readEvent(bufferedReader);
+            Queue<String> eventLines = readEvent(bufferedReaderInput);
             Event event =  eventLines.size() > 3 ? getEvent(eventLines) : null;
             if (event != null) {
                 touchEvents.add(event);
@@ -169,8 +181,8 @@ public class EventReader implements Runnable {
             }
         }
 
-        ABSCoordinates absCoordinates = new ABSCoordinates(absX, absY);
-        return new Event_Normal(absCoordinates);
+        AbsoluteCoordinates absoluteCoordinates = new AbsoluteCoordinates(absX, absY);
+        return new Event_Normal(absoluteCoordinates);
     }
 
 
@@ -182,7 +194,7 @@ public class EventReader implements Runnable {
 
 
     public Event_Dragging getEventDRAGGING(Queue<String> eventLines) {
-        Deque<ABSCoordinates> absCoordinates = new LinkedList<>();
+        Deque<AbsoluteCoordinates> absoluteCoordinates = new LinkedList<>();
 
         int absX = -1000, absY = -1000;
         boolean isX = false, isY = false;
@@ -206,13 +218,13 @@ public class EventReader implements Runnable {
                             lineSplit[8].equals("000000") &&
                             (isX || isY)) {
                 // SYN_REPORT == ... 000000  000000  000000  000000 <- indicates end of this set of coordinates
-                absCoordinates.add(new ABSCoordinates(absX, absY));
+                absoluteCoordinates.add(new AbsoluteCoordinates(absX, absY));
                 isX = false;
                 isY = false;
             }
         }
 
-        return new Event_Dragging(absCoordinates);
+        return new Event_Dragging(absoluteCoordinates);
     }
 }
 
