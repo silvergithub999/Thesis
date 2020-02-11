@@ -1,42 +1,25 @@
 package com.example.thesis.Coordinates;
 
-public class ScreenCoordinates extends AbsoluteCoordinates {
+public class ScreenCoordinates {
     // TODO: change them to floats, since the dev tools have them as floats.
-    private int x;  // TODO: x to screenX etc
-    private int y;
+    private final int screenX;  // TODO: screenX to screenX etc
+    private final int screenY;
 
-    public ScreenCoordinates(AbsoluteCoordinates absoluteCoordinates, int x, int y) {
-        super(absoluteCoordinates.getAbsoluteX(), absoluteCoordinates.getAbsoluteY());
-        this.x = x;
-        this.y = y;
+    public ScreenCoordinates(int screenX, int screenY) {
+        this.screenX = screenX;
+        this.screenY = screenY;
     }
 
-    public ScreenCoordinates(int absX, int absY, float widthMultiplier, float heightMultiplier) {
-        super(absX, absY);
-        this.x = x;
-        this.y = y;
+    public int getScreenX() {
+        return screenX;
     }
 
-    @Override
-    public int getAbsoluteX() {
-        return super.getAbsoluteX();
-    }
-
-    @Override
-    public int getAbsoluteY() {
-        return super.getAbsoluteY();
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
+    public int getScreenY() {
+        return screenY;
     }
 
     @Override
     public String toString() {
-        return "(" + x + ", " + y + ')';
+        return "(" + screenX + ", " + screenY + ')';
     }
 }

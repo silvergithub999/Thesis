@@ -35,8 +35,9 @@ public class Converter {
     public ScreenCoordinates convertAbsToScreenCoordinates(AbsoluteCoordinates absoluteCoordinates) {
         int screenX = Math.round(absoluteCoordinates.getAbsoluteX() * widthMultiplier);
         int screenY = Math.round(absoluteCoordinates.getAbsoluteY() * heightMultiplier);
-        ScreenCoordinates screenCoordinates = new ScreenCoordinates(absoluteCoordinates, screenX, screenY);
-        return screenCoordinates;
+        // ScreenCoordinates screenCoordinates = new ScreenCoordinates(absoluteCoordinates, screenX, screenY);
+        // return screenCoordinates;
+        return null;
     }
 
 

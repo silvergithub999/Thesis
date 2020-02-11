@@ -7,7 +7,7 @@
 # https://download.chainfire.eu/supersu/
 # http://4pda.ru/forum/index.php?showtopic=318487
 
-set -e -x
+set -e -screenX
 
 BIN_DIR="/system/xbin"
 SU_ARC="SR5-SuperSU-v2.82-SR5-20171001224502.zip"

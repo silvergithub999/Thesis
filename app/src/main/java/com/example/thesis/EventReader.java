@@ -36,6 +36,13 @@ public class EventReader implements Runnable {
     }
 
 
+    public synchronized void doStart() {
+        // TODO: destroy process and input/outpureaders.
+        this.doStop = false;
+        Log.i("Event Reader", "Stopped EventReader!");
+    }
+
+
     public synchronized void doStop() {
         // TODO: destroy process and input/outpureaders.
         this.doStop = true;
@@ -188,7 +195,15 @@ public class EventReader implements Runnable {
 
     public Event_Normal getEventMULTIPLE_TAPS(Queue<String> eventLines) {
         Event event = touchEvents.peek();
-        Event_Normal eventCopy = (Event_Normal) event.makeCopy();
+        Event_Normal eventCopy;
+
+        try {
+            eventCopy = (Event_Normal) event.makeCopy();
+        } catch (ClassCastException e) {
+            Event_Dragging event_dragging = (Event_Dragging) event;
+            eventCopy = (Event_Normal) new Event_Normal(event_dragging.getAbsoluteCoordinates().getLast());
+        }
+
         return eventCopy;
     }
 
