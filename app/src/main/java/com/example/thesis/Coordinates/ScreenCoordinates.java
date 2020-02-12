@@ -1,8 +1,7 @@
 package com.example.thesis.Coordinates;
 
 public class ScreenCoordinates {
-    // TODO: change them to floats, since the dev tools have them as floats.
-    private final int screenX;  // TODO: screenX to screenX etc
+    private final int screenX;
     private final int screenY;
 
     public ScreenCoordinates(int screenX, int screenY) {

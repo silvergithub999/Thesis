@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.widget.Toast;
@@ -22,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void startMalware(View view) {
         // TODO: add a check that checks for root access!
-        // TODO: allow only one malware to run.
 
         if (!malwareRunning) {
             malwareRunning = true;

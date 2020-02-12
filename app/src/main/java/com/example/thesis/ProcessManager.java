@@ -2,16 +2,9 @@ package com.example.thesis;
 
 import android.util.Log;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ProcessManager {
-    // TODO: maybe move bufferedReaders into the classes themselves and not here, keep only processes here.
-
     public Process runRootCommand(String command) {
         try {
             // Starting process as su.

@@ -20,7 +20,6 @@ public class EventReader implements Runnable {
 
     private Process rootProcess;
 
-    // TODO: check, that they close when rootProcess is closed
     private BufferedReader bufferedReaderInput;
     private BufferedReader bufferedReaderErrors;
 
