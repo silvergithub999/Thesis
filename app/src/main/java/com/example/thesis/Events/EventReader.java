@@ -1,11 +1,9 @@
-package com.example.thesis;
+package com.example.thesis.Events;
 
 import android.util.Log;
 
 import com.example.thesis.Coordinates.AbsoluteCoordinates;
-import com.example.thesis.Events.Event;
-import com.example.thesis.Events.Event_Dragging;
-import com.example.thesis.Events.Event_Normal;
+import com.example.thesis.ProcessManager;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -26,9 +24,11 @@ public class EventReader implements Runnable {
     private BufferedReader bufferedReaderInput;
     private BufferedReader bufferedReaderErrors;
 
-
-
     private boolean doStop = false;
+
+    public Deque<Event> getTouchEvents() {
+        return touchEvents;
+    }
 
     public EventReader() {
         this.processManager = new ProcessManager();
@@ -84,7 +84,6 @@ public class EventReader implements Runnable {
             if (event != null) {
                 touchEvents.add(event);
                 Log.i("Event Reader", "Captured touch: " + event);
-                event.sendEvent();
             } else {
                 Log.i("Event Reader", "Ignoring multi touch event!");
             }

@@ -15,10 +15,6 @@ public class Event_Dragging implements Event {
         return absoluteCoordinates;
     }
 
-    @Override
-    public void sendEvent() {
-
-    }
 
     @Override
     public String toString() {

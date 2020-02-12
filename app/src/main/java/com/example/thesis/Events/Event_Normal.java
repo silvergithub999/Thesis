@@ -19,11 +19,6 @@ public class Event_Normal implements Event {
         return deque;
     }
 
-    @Override
-    public void sendEvent() {
-        ProcessManager processManager = new ProcessManager();
-        processManager.runRootCommand("input tap 700 1400");
-    }
 
     @Override
     public String toString() {

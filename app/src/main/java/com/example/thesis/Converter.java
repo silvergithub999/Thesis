@@ -12,8 +12,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Converter {
-    private float widthMultiplier;
-    private float heightMultiplier;
+    final private float widthMultiplier;
+    final private float heightMultiplier;
 
     private ProcessManager processManager;
 
@@ -32,12 +32,11 @@ public class Converter {
         heightMultiplier = screenY / absoluteY;
     }
 
-    public ScreenCoordinates convertAbsToScreenCoordinates(AbsoluteCoordinates absoluteCoordinates) {
+    public ScreenCoordinates convertAbsoluteToScreenCoordinates(AbsoluteCoordinates absoluteCoordinates) {
         int screenX = Math.round(absoluteCoordinates.getAbsoluteX() * widthMultiplier);
         int screenY = Math.round(absoluteCoordinates.getAbsoluteY() * heightMultiplier);
-        // ScreenCoordinates screenCoordinates = new ScreenCoordinates(absoluteCoordinates, screenX, screenY);
-        // return screenCoordinates;
-        return null;
+        ScreenCoordinates screenCoordinates = new ScreenCoordinates(screenX, screenY);
+        return screenCoordinates;
     }
 
 
