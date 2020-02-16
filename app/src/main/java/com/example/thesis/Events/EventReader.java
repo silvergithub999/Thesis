@@ -199,7 +199,7 @@ public class EventReader implements Runnable {
             eventCopy = (Event_Normal) event.makeCopy();
         } catch (ClassCastException e) {
             Event_Dragging event_dragging = (Event_Dragging) event;
-            eventCopy = (Event_Normal) new Event_Normal(event_dragging.getAbsoluteCoordinates().getLast());
+            eventCopy = ((Event_Dragging) event).getNormalEvent();
         }
 
         return eventCopy;

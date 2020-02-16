@@ -8,6 +8,8 @@ import com.example.thesis.Coordinates.ScreenCoordinates;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,6 +38,14 @@ public class Converter {
         int screenX = Math.round(absoluteCoordinates.getAbsoluteX() * widthMultiplier);
         int screenY = Math.round(absoluteCoordinates.getAbsoluteY() * heightMultiplier);
         ScreenCoordinates screenCoordinates = new ScreenCoordinates(screenX, screenY);
+        return screenCoordinates;
+    }
+
+    public Deque<ScreenCoordinates> convertAbsoluteToScreenCoordinates(Deque<AbsoluteCoordinates> absoluteCoordinates) {
+        Deque<ScreenCoordinates> screenCoordinates = new LinkedList<>();
+        while(!absoluteCoordinates.isEmpty()) {
+            screenCoordinates.add(convertAbsoluteToScreenCoordinates(absoluteCoordinates.poll()));
+        }
         return screenCoordinates;
     }
 
