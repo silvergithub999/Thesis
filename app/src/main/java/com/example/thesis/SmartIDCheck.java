@@ -52,8 +52,8 @@ public class SmartIDCheck {
 
         String foregroundApp = getAppInForeground();
 
-        // if (foregroundApp.contains("smart_id")) {
-        if (foregroundApp.contains("com.android.calculator")) { // TODO: This is for testing, remove later!
+        if (foregroundApp.contains("smart_id")) {       // TODO: found a more complete name for it
+        // if (foregroundApp.contains("com.android.calculator")) { // TODO: This is for testing, remove later!
             return true;
         }
         return false;
@@ -77,15 +77,15 @@ public class SmartIDCheck {
 
         // Pin buttons.
         int[] x_list = new int[]{202, 580, 958};
-        for (int i = 1, x = 0, y = 1375; i <= 9; i++) {
-            if (i % 3 == 0) {
+        for (int i = 0, y = 1375; i <= 9; i++) {
+            if (i % 3 == 0 && i != 0) {
                 y += 322;
             }
 
-            Button pinButton = new PinButton(i, 280, 280, x_list[x], y);
+            Button pinButton = new PinButton(i + 1, 280, 280, x_list[i % 3], y);
             buttons.add(pinButton);
         }
-        Button pinButton = new PinButton(0, 280, 280, 580, 2341);
+        Button pinButton = new PinButton(0, 280, 280, x_list[1], 2341);
         buttons.add(pinButton);
 
         // Cancel and OK buttons.
