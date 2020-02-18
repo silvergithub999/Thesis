@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class EventReader implements Runnable {
-    // TODO: comments and rename things better (for example coords and abscoords)...
+    // TODO: maybe join Event, Event_Dragging and Event_Normal classes
 
     private Deque<Event> touchEvents;
 
