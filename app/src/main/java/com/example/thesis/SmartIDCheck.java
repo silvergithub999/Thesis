@@ -9,7 +9,6 @@ import com.example.thesis.Buttons.PinButton;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +17,7 @@ import java.util.List;
  */
 // TODO: rename class
 public class SmartIDCheck {
-    private ProcessManager processManager;
+    private ProcessManagerService processManagerService;
 
     private Process rootProcess;
     private BufferedReader bufferedReaderInput;
@@ -26,12 +25,12 @@ public class SmartIDCheck {
 
 
     public SmartIDCheck() {
-        this.processManager = new ProcessManager();
-        this.rootProcess = processManager.getRootProcess();
+        this.processManagerService = new ProcessManagerService();
+        this.rootProcess = processManagerService.getRootProcess();
 
         this.bufferedReaderInput = new BufferedReader(new InputStreamReader(rootProcess.getInputStream()));
         this.bufferedReaderErrors = new BufferedReader(new InputStreamReader(rootProcess.getErrorStream()));  // TODO: make it read errors aswell
-    }
+}
 
 
     /**
@@ -64,7 +63,7 @@ public class SmartIDCheck {
     private String getAppInForeground() {
         // https://stackoverflow.com/questions/28543776/android-shell-get-foreground-app-package-name
         try {
-            this.processManager.runRootCommand(rootProcess.getOutputStream(), "dumpsys window windows | grep \"mCurrentFocus\"");
+            ProcessManagerService.sendCommand(rootProcess, "dumpsys window windows | grep \"mCurrentFocus\"");
             return bufferedReaderInput.readLine();
         } catch (Exception error) {
             Log.e("Smart-ID Check", "Error reading the dumpsys lines: " + error.getMessage());

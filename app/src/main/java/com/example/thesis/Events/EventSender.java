@@ -3,15 +3,13 @@ package com.example.thesis.Events;
 import com.example.thesis.Converter;
 import com.example.thesis.Coordinates.AbsoluteCoordinates;
 import com.example.thesis.Coordinates.ScreenCoordinates;
-import com.example.thesis.ProcessManager;
+import com.example.thesis.ProcessManagerService;
 
 public class EventSender {
     final private Converter converter;
-    final private ProcessManager processManager;
 
     public EventSender(Converter converter) {
         this.converter = converter;
-        this.processManager = new ProcessManager();
     }
 
 
@@ -22,7 +20,7 @@ public class EventSender {
         command.append(" ");
         command.append(screenCoordinates.getScreenY());
 
-        Process process = processManager.runRootCommand(command.toString());
+        Process process = ProcessManagerService.runRootCommand(command.toString());
         process.destroy();
     }
 

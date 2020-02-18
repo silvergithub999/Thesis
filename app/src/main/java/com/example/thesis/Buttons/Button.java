@@ -1,19 +1,27 @@
 package com.example.thesis.Buttons;
 
 import com.example.thesis.Converter;
-import com.example.thesis.Coordinates.AbsoluteCoordinates;
 import com.example.thesis.Coordinates.ScreenCoordinates;
 import com.example.thesis.Events.Event;
 
 import java.util.Deque;
-import java.util.LinkedList;
 
+/**
+ * Class to extend for cancel, ok and PIN buttons.
+ */
 public abstract class Button {
-    private int height;
-    private int width;
-    private int locationX;
-    private int locationY;
+    final private int height;
+    final private int width;
+    final private int locationX;
+    final private int locationY;
 
+    /**
+     * Button constructor.
+     * @param height - height of the button.
+     * @param width - width of the button.
+     * @param locationX - top-left x coordinate of the button.
+     * @param locationY - top-left y coordinate of the button.
+     */
     public Button(int height, int width, int locationX, int locationY) {
         this.height = height;
         this.width = width;
@@ -21,21 +29,27 @@ public abstract class Button {
         this.locationY = locationY;
     }
 
+    /**
+     * Checks if the coordinates are inside the button.
+     * @param screenCoordinates - coordinates of the touch.
+     * @return true if touch the button was touched, else false.
+     */
     public boolean coordinatesInsideButton(ScreenCoordinates screenCoordinates) {
-        if (screenCoordinates.getScreenX() >= locationX &&
+        return screenCoordinates.getScreenX() >= locationX &&
         screenCoordinates.getScreenX() <= locationX + width &&
         screenCoordinates.getScreenY() >= locationY &&
-        screenCoordinates.getScreenY() <= locationY + height) {
-            return true;
-        }
-        return false;
+        screenCoordinates.getScreenY() <= locationY + height;
     }
 
 
+    /**
+     * Checks if the event happened inside the button.
+     * @param event - touch event.
+     * @param converter - converter to convert the event absolute coordinates to screen coordinates.
+     * @return true if the button was touched, false if not.
+     */
     public boolean touchInsideButton(Event event, Converter converter) {
-        // TODO
-        Deque<AbsoluteCoordinates> absoluteCoordinates = event.getAbsoluteCoordinates();
-        Deque<ScreenCoordinates> screenCoordinates = converter.convertAbsoluteToScreenCoordinates(new LinkedList(absoluteCoordinates));
+        Deque<ScreenCoordinates> screenCoordinates = event.getScreenCoordinates(converter);
 
         while (!screenCoordinates.isEmpty()) {
             ScreenCoordinates coords = screenCoordinates.poll();
@@ -47,5 +61,9 @@ public abstract class Button {
         return true;
     }
 
+    /**
+     * Returns the value of the button.
+     * @return numpad (0-9), cancel (-1000), ok (1000).
+     */
     public abstract int getValue();
 }

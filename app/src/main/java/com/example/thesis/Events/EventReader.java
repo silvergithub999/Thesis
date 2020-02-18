@@ -3,7 +3,7 @@ package com.example.thesis.Events;
 import android.util.Log;
 
 import com.example.thesis.Coordinates.AbsoluteCoordinates;
-import com.example.thesis.ProcessManager;
+import com.example.thesis.ProcessManagerService;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -12,33 +12,24 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class EventReader implements Runnable {
-    // TODO: maybe join Event, Event_Dragging and Event_Normal classes
-
     private Deque<Event> touchEvents;
-
-    private ProcessManager processManager;
-
     private Process rootProcess;
-
-    private BufferedReader bufferedReaderInput;
-    private BufferedReader bufferedReaderErrors;
-
     private boolean doStop = false;
+
 
     public Deque<Event> getTouchEvents() {
         return touchEvents;
     }
 
+
     public EventReader() {
-        this.processManager = new ProcessManager();
         this.touchEvents = new LinkedList<>();
     }
 
 
     public synchronized void doStart() {
-        // TODO: destroy process and input/outpureaders.
         this.doStop = false;
-        Log.i("Event Reader", "Stopped EventReader!");
+        Log.i("Event Reader", "Restarted EventReader!");
     }
 
 
@@ -70,9 +61,9 @@ public class EventReader implements Runnable {
      */
     private void captureTouchEvents() {
         // Running command.
-        rootProcess = processManager.runRootCommand("od /dev/input/event1");
-        bufferedReaderInput = new BufferedReader(new InputStreamReader(rootProcess.getInputStream()));
-        bufferedReaderErrors = new BufferedReader(new InputStreamReader(rootProcess.getErrorStream()));
+        rootProcess = ProcessManagerService.runRootCommand("od /dev/input/event1");
+        BufferedReader bufferedReaderInput = new BufferedReader(new InputStreamReader(rootProcess.getInputStream()));
+        BufferedReader bufferedReaderErrors = new BufferedReader(new InputStreamReader(rootProcess.getErrorStream()));
         // TODO: make it read errors aswell
 
         // Reading result.
@@ -115,8 +106,6 @@ public class EventReader implements Runnable {
     private EventType checkEventType(Queue<String> eventLines) {
         boolean isX = false;
         boolean isY = false;
-
-        //Checking if it is multi touch event.
 
         // Checking if there are x and y coordinates.
         while(!eventLines.isEmpty()) {
@@ -164,13 +153,13 @@ public class EventReader implements Runnable {
         } else if (eventType == EventType.DRAGGING){
             return getEventDRAGGING(eventLines);
         } else {
-            // MULTI_TOUCH
+            // MULTI_TOUCH.
             return null;
         }
     }
 
 
-    public Event_Normal getEventNORMAL(Queue<String> eventLines) {
+    public Event getEventNORMAL(Queue<String> eventLines) {
         int absX = -1000, absY = -1000;
 
         while(!eventLines.isEmpty()) {
@@ -187,26 +176,18 @@ public class EventReader implements Runnable {
         }
 
         AbsoluteCoordinates absoluteCoordinates = new AbsoluteCoordinates(absX, absY);
-        return new Event_Normal(absoluteCoordinates);
+        return new Event(absoluteCoordinates);
     }
 
 
-    public Event_Normal getEventMULTIPLE_TAPS(Queue<String> eventLines) {
+    public Event getEventMULTIPLE_TAPS(Queue<String> eventLines) {
         Event event = touchEvents.peek();
-        Event_Normal eventCopy;
-
-        try {
-            eventCopy = (Event_Normal) event.makeCopy();
-        } catch (ClassCastException e) {
-            Event_Dragging event_dragging = (Event_Dragging) event;
-            eventCopy = ((Event_Dragging) event).getNormalEvent();
-        }
-
-        return eventCopy;
+        return event.getLastEvent();
     }
 
 
-    public Event_Dragging getEventDRAGGING(Queue<String> eventLines) {
+    public Event getEventDRAGGING(Queue<String> eventLines) {
+        // TODO: fix bug where if started dragging where previous touch was, then.
         Deque<AbsoluteCoordinates> absoluteCoordinates = new LinkedList<>();
 
         int absX = -1000, absY = -1000;
@@ -237,7 +218,7 @@ public class EventReader implements Runnable {
             }
         }
 
-        return new Event_Dragging(absoluteCoordinates);
+        return new Event(absoluteCoordinates);
     }
 }
 
