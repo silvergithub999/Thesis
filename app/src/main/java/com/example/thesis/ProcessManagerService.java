@@ -11,7 +11,7 @@ import java.util.Queue;
 /**
  * This class handles the Process class related activites.
  */
-public class ProcessManagerService {
+public final class ProcessManagerService {
 
     /**
      * Creates a process with root privileges and runs the given command.
@@ -65,7 +65,7 @@ public class ProcessManagerService {
 
     /**
      * Creates a process with root privileges and runs the command there. And reads the output of the command.
-     * Note: currently has a bug where for example "grep" won't work.
+     * Note: currently has a bug where some things don't work. For example pipe and "grep".
      * @param command - command to run in the process.
      * @return queue of the command output.
      */

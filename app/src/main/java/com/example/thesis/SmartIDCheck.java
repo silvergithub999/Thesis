@@ -11,13 +11,13 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * This class checks, if Smart-ID is the app in front.
  */
 // TODO: rename class
 public class SmartIDCheck {
-    private ProcessManagerService processManagerService;
 
     private Process rootProcess;
     private BufferedReader bufferedReaderInput;
@@ -25,11 +25,10 @@ public class SmartIDCheck {
 
 
     public SmartIDCheck() {
-        this.processManagerService = new ProcessManagerService();
-        this.rootProcess = processManagerService.getRootProcess();
+        this.rootProcess = ProcessManagerService.getRootProcess();
 
         this.bufferedReaderInput = new BufferedReader(new InputStreamReader(rootProcess.getInputStream()));
-        this.bufferedReaderErrors = new BufferedReader(new InputStreamReader(rootProcess.getErrorStream()));  // TODO: make it read errors aswell
+        this.bufferedReaderErrors = new BufferedReader(new InputStreamReader(rootProcess.getErrorStream()));  // TODO: make it read errors as well
 }
 
 
@@ -44,18 +43,16 @@ public class SmartIDCheck {
     /**
      * Checks whether the Smart-ID app is in front or not.
      * @return true if Smart-ID is in front, false if not.
-     * // TODO: for testing currently is calculator.
      */
     public boolean isSmartIDInForeground() {
-        // TODO: maybe make it smarter, so it won't work on demo or other screen other than entering PINs?
-
         String foregroundApp = getAppInForeground();
-
-        if (foregroundApp.contains("smart_id")) {       // TODO: found a more complete name for it
-        // if (foregroundApp.contains("com.android.calculator")) { // TODO: This is for testing, remove later!
+        if (foregroundApp.contains("com.smart_id/com.stagnationlab.sk.TransactionActivity")) {
+            getViewTree();
             return true;
         }
         return false;
+        //return foregroundApp.contains("com.smart_id/com.stagnationlab.sk.TransactionActivity");
+        // return foregroundApp.contains("com.android.calculator");
     }
 
 
@@ -71,7 +68,9 @@ public class SmartIDCheck {
         return null;
     }
 
+
     public List<Button> getButtons() {
+        // screencap /mnt/sdcard/Download/test.png
         List<Button> buttons = new ArrayList<>();
 
         // Pin buttons.
@@ -99,5 +98,36 @@ public class SmartIDCheck {
 
     public boolean successAuth() {
         return true;
+    }
+
+
+    /**
+     * Below are the new functions.
+     */
+
+    private char getViewTree() {
+        // TODO
+        Queue<String> outputLines = ProcessManagerService.readOutput("dumpsys activity top");
+        Log.i("OUTPUT", outputLines.toString());
+        return 'a';
+        // cat /sdcard/window_dump.xml
+    }
+
+
+
+    public boolean isAuthenticatingScreen(String appName) {
+        return appName.contains("");
+    }
+
+
+    public boolean isAuthFailedScreen(String appName) {
+        // TODO
+        return appName.contains("TODO: ADD HERE");
+    }
+
+
+    public boolean isAuthSuccessScreen(String appName) {
+        // TODO
+        return appName.contains("TODO: ADD HERE");
     }
 }

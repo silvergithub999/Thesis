@@ -72,7 +72,6 @@ public class Converter {
 
         Pattern pattern = Pattern.compile(", max (.+), fuzz");
         int absoluteX = -1000;
-        int absoluteY = -1000;
 
         while (!outputLines.isEmpty()) {
             String line = outputLines.poll();
@@ -82,7 +81,7 @@ public class Converter {
                     if (line.contains("ABS_MT_POSITION_X")) {
                         absoluteX = Integer.parseInt(matcher.group(1));
                     } else {
-                        absoluteY = Integer.parseInt(matcher.group(1));
+                        int absoluteY = Integer.parseInt(matcher.group(1));
                         return new AbsoluteCoordinates(absoluteX, absoluteY);
                     }
                 }

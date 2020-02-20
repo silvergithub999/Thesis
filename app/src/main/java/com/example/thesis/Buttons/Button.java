@@ -63,7 +63,15 @@ public abstract class Button {
 
     /**
      * Returns the value of the button.
-     * @return numpad (0-9), cancel (-1000), ok (1000).
+     * @return numpad (0-9), cancel (-1000), ok (1000), delete (-50).
      */
     public abstract int getValue();
+
+
+    /**
+     * This sends a touch event to the buttons location.
+     */
+    public void touchButton() {
+        // TODO: can remove EventSender class.
+    }
 }
