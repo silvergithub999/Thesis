@@ -17,7 +17,7 @@ public class EventReader implements Runnable {
     private boolean doStop = false;
 
 
-    public Deque<Event> getTouchEvents() {
+    public Queue<Event> getTouchEvents() {
         return touchEvents;
     }
 
