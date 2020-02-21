@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.example.thesis.Buttons.Button;
 import com.example.thesis.Buttons.CancelButton;
+import com.example.thesis.Buttons.DeleteButton;
 import com.example.thesis.Buttons.OkButton;
 import com.example.thesis.Buttons.PinButton;
 import com.example.thesis.Events.Event;
@@ -25,12 +26,16 @@ public class DisplayedScreenService {
     private BufferedReader bufferedReaderInput;
     private BufferedReader bufferedReaderErrors;
 
+    private ImageService imageService;
+
 
     public DisplayedScreenService() {
         this.rootProcess = ProcessManagerService.getRootProcess();
         this.bufferedReaderInput = new BufferedReader(new InputStreamReader(rootProcess.getInputStream()));
         this.bufferedReaderErrors = new BufferedReader(new InputStreamReader(rootProcess.getErrorStream()));  // TODO: make it read errors as well
-}
+
+        this.imageService = new ImageService();
+    }
 
 
     /**
@@ -74,44 +79,19 @@ public class DisplayedScreenService {
             if (i % 3 == 0 && i != 0) {
                 y += 322;
             }
-
-            Button pinButton = new PinButton(i + 1, 280, 280, x_list[i % 3], y);
-            buttons.add(pinButton);
+            buttons.add(new PinButton(i + 1, 280, 280, x_list[i % 3], y));
         }
-        Button pinButton = new PinButton(0, 280, 280, x_list[1], 2341);
-        buttons.add(pinButton);
+        buttons.add(new PinButton(0, 280, 280, x_list[1], 2341));
 
-        // Cancel and OK buttons.
-        Button cancelButton = new CancelButton(175, 364, 153, 2393);
-        Button okButton = new OkButton(175, 364, 923, 2393);
-        Button deleteButton = null;
-        buttons.add(cancelButton);
-        buttons.add(okButton);
+        // Cancel, delete and OK buttons.
+        buttons.add(new CancelButton(175, 364, 153, 2393));
+        buttons.add(new OkButton(175, 364, 923, 2393));
+        buttons.add(new DeleteButton(175, 175, 972, 1130));
 
         return buttons;
     }
 
 
-    /**
-     * Below are the new functions.
-     * TODO: depending on how it works, rename.
-     */
-
-    private char getViewTree() {
-        // TODO
-        Queue<String> outputLines = ProcessManagerService.readOutput("dumpsys activity top");
-        // Queue<String> outputLines = ProcessManagerService.readOutput("uiautomator dump");
-
-        Log.i("OUTPUT", outputLines.toString());
-        return 'a';
-        // cat /sdcard/window_dump.xml
-    }
-
-
-    /**
-     * TODO: when auth_success, then this runs.
-     * @return
-     */
     public Queue<Integer> extractPIN(Queue<Event> touchEvents) {
         Deque<Integer> PIN = new LinkedList<>();
         Converter converter = new Converter();
@@ -139,6 +119,9 @@ public class DisplayedScreenService {
         }
         return PIN;
     }
+
+
+
 }
 
 /**
