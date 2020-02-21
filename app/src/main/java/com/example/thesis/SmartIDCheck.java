@@ -26,7 +26,6 @@ public class SmartIDCheck {
 
     public SmartIDCheck() {
         this.rootProcess = ProcessManagerService.getRootProcess();
-
         this.bufferedReaderInput = new BufferedReader(new InputStreamReader(rootProcess.getInputStream()));
         this.bufferedReaderErrors = new BufferedReader(new InputStreamReader(rootProcess.getErrorStream()));  // TODO: make it read errors as well
 }
@@ -104,6 +103,7 @@ public class SmartIDCheck {
 
     /**
      * Below are the new functions.
+     * TODO: depending on how it works, rename.
      */
 
     private char getViewTree() {
@@ -116,21 +116,18 @@ public class SmartIDCheck {
         // cat /sdcard/window_dump.xml
     }
 
-
-
-    public boolean isAuthenticatingScreen(String appName) {
-        return appName.contains("");
+    private CurrentScreen getScreenType() {
+        //TODO
+        return CurrentScreen.AUTH_PIN;
     }
 
 
-    public boolean isAuthFailedScreen(String appName) {
-        // TODO
-        return appName.contains("TODO: ADD HERE");
-    }
+}
 
-
-    public boolean isAuthSuccessScreen(String appName) {
-        // TODO
-        return appName.contains("TODO: ADD HERE");
-    }
+// TODO: maybe move to Malware.
+enum CurrentScreen {
+    AUTH_PIN,
+    AUTH_PIN_FAILED,
+    AUTH_SUCCESS,
+    AUTH_FAILED
 }
