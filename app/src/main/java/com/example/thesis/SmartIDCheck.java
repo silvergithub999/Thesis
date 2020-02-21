@@ -12,8 +12,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Deque;
-import java.util.Dictionary;
-import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -43,7 +41,7 @@ public class SmartIDCheck {
         rootProcess.destroy();
     }
 
-    public CurrentScreen getCurrentScreen() {
+    public DisplayedScreen getCurrentScreen() {
         return null;
     }
 
@@ -107,15 +105,6 @@ public class SmartIDCheck {
         return buttons;
     }
 
-    public Dictionary<Integer, Button> getButtonsDict(List<Button> buttons) {
-        Dictionary<Integer, Button> buttonsDict = new Hashtable<>();
-    }
-
-
-    public boolean successAuth() {
-        return true;
-    }
-
 
     /**
      * Below are the new functions.
@@ -132,9 +121,9 @@ public class SmartIDCheck {
         // cat /sdcard/window_dump.xml
     }
 
-    private CurrentScreen getScreenType() {
+    private DisplayedScreen getScreenType() {
         //TODO
-        return CurrentScreen.AUTH_PIN_1;
+        return DisplayedScreen.AUTH_PIN_1;
     }
 
     /**
@@ -143,6 +132,7 @@ public class SmartIDCheck {
      */
     public Queue<Integer> extractPIN(Queue<Event> touchEvents) {
         Deque<Integer> PIN = new LinkedList<>();
+        Converter converter = new Converter();
 
         List<Button> buttons = getButtons();
 
@@ -167,11 +157,9 @@ public class SmartIDCheck {
         }
         return PIN;
     }
-
-
 }
 
-enum CurrentScreen {
+enum DisplayedScreen {
     AUTH_PIN_1,
     // AUTH_PIN_1_FAILED,
     AUTH_PIN_2,
