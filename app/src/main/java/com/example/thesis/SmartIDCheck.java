@@ -6,10 +6,12 @@ import com.example.thesis.Buttons.Button;
 import com.example.thesis.Buttons.CancelButton;
 import com.example.thesis.Buttons.OkButton;
 import com.example.thesis.Buttons.PinButton;
+import com.example.thesis.Events.Event;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 import java.util.Queue;
 
@@ -36,6 +38,10 @@ public class SmartIDCheck {
      */
     public void doStop() {
         rootProcess.destroy();
+    }
+
+    public CurrentScreen getCurrentScreen() {
+        return null;
     }
 
 
@@ -120,16 +126,48 @@ public class SmartIDCheck {
 
     private CurrentScreen getScreenType() {
         //TODO
-        return CurrentScreen.AUTH_PIN;
+        return CurrentScreen.AUTH_PIN_1;
+    }
+
+    /**
+     * TODO: when auth_success, then this runs.
+     * @return
+     */
+    public String extractPIN(Deque<Event> touchEvents) {
+        StringBuilder PIN = new StringBuilder();
+
+        List<Button> buttons = getButtons();
+
+        while (!touchEvents.isEmpty()) {
+            Event touchEvent = touchEvents.poll();
+            for (Button button : buttons) {
+                boolean isInside = button.touchInsideButton(touchEvent, converter);
+                if (isInside) {
+                    if (button.getValue() == 1000) {
+                        // OK button.
+                    } else if (button.getValue() == -1000) {
+                        // Cancel button.
+                    } else if (button.getValue() == -50 && PIN.length() > 0) {
+                        // Delete button.
+                        PIN.deleteCharAt(PIN.length() - 1);
+                    } else {
+                        // Numpad button.
+                        PIN.append(button.getValue());
+                    }
+                }
+            }
+        }
+        return PIN.toString();
     }
 
 
 }
 
-// TODO: maybe move to Malware.
 enum CurrentScreen {
-    AUTH_PIN,
-    AUTH_PIN_FAILED,
+    AUTH_PIN_1,
+    AUTH_PIN_1_FAILED,
+    AUTH_PIN_2,
+    AUTH_PIN_2_FAILED,
     AUTH_SUCCESS,
     AUTH_FAILED,
     OTHER
