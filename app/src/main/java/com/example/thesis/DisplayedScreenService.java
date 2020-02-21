@@ -18,16 +18,15 @@ import java.util.Queue;
 
 /**
  * This class checks, if Smart-ID is the app in front.
+ * And what view is open in Smart-ID
  */
-// TODO: rename class
-public class SmartIDCheck {
-
+public class DisplayedScreenService {
     private Process rootProcess;
     private BufferedReader bufferedReaderInput;
     private BufferedReader bufferedReaderErrors;
 
 
-    public SmartIDCheck() {
+    public DisplayedScreenService() {
         this.rootProcess = ProcessManagerService.getRootProcess();
         this.bufferedReaderInput = new BufferedReader(new InputStreamReader(rootProcess.getInputStream()));
         this.bufferedReaderErrors = new BufferedReader(new InputStreamReader(rootProcess.getErrorStream()));  // TODO: make it read errors as well
@@ -41,33 +40,20 @@ public class SmartIDCheck {
         rootProcess.destroy();
     }
 
+
     public DisplayedScreen getCurrentScreen() {
-        return null;
-    }
-
-
-    /**
-     * Checks whether the Smart-ID app is in front or not.
-     * @return true if Smart-ID is in front, false if not.
-     */
-    public boolean isSmartIDInForeground() {
-        adsads;
-        // TODO: make it return screentype and have malware react accordingly
         String foregroundApp = getAppInForeground();
-        if (foregroundApp.contains("com.android.calculator")) {
-        // if (foregroundApp.contains("com.smart_id/com.stagnationlab.sk.TransactionActivity")) {
-            getViewTree();
-            return true;
+        // if (foregroundApp.contains("com.android.calculator")) {
+        if (foregroundApp.contains("com.smart_id/com.stagnationlab.sk.TransactionActivity")) {
+            // TODO: find out the type and add thsoe types here.
+            return DisplayedScreen.AUTH_PIN_1;
+        } else {
+            return DisplayedScreen.OTHER;
         }
-        return false;
-        //return foregroundApp.contains("com.smart_id/com.stagnationlab.sk.TransactionActivity");
-        // return foregroundApp.contains("com.android.calculator");
     }
-
 
 
     private String getAppInForeground() {
-        // https://stackoverflow.com/questions/28543776/android-shell-get-foreground-app-package-name
         try {
             ProcessManagerService.sendCommand(rootProcess, "dumpsys window windows | grep \"mCurrentFocus\"");
             return bufferedReaderInput.readLine();
@@ -121,10 +107,6 @@ public class SmartIDCheck {
         // cat /sdcard/window_dump.xml
     }
 
-    private DisplayedScreen getScreenType() {
-        //TODO
-        return DisplayedScreen.AUTH_PIN_1;
-    }
 
     /**
      * TODO: when auth_success, then this runs.
@@ -159,12 +141,15 @@ public class SmartIDCheck {
     }
 }
 
+/**
+ * Holds different type of views that can exist.
+ */
 enum DisplayedScreen {
     AUTH_PIN_1,
-    // AUTH_PIN_1_FAILED,
     AUTH_PIN_2,
-    // AUTH_PIN_2_FAILED,
     AUTH_SUCCESS,
     AUTH_FAILED,
-    OTHER
+    OTHER,
+    // AUTH_PIN_1_FAILED,
+    // AUTH_PIN_2_FAILED,
 }

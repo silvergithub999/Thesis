@@ -3,8 +3,6 @@ package com.example.thesis;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.View;
 import android.widget.Toast;
 
@@ -24,18 +22,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (!malwareRunning) {
             malwareRunning = true;
-
-            //Getting the screen width and height for converter and creating it.
-            // TODO: maybe use this -> dumpsys window displays | grep "init"
-            int[] resolution = getScreenSize();
-            int width = resolution[0];
-            int height = resolution[1];
-            Converter converter = new Converter(width, height);
-
-
-            // Staring malware thread.
-            malware = new Malware(converter);
-            Thread malwareThread = new Thread(malware, "Malware Thread");  // TODO: name all threads
+            malware = new Malware();
+            Thread malwareThread = new Thread(malware, "Malware Thread");
             malwareThread.start();
             Toast.makeText(this, "Started malware!", Toast.LENGTH_SHORT).show();
         } else {
@@ -48,19 +36,4 @@ public class MainActivity extends AppCompatActivity {
         malwareRunning = false;
         Toast.makeText(this, "Stopped malware!", Toast.LENGTH_SHORT).show();
     }
-
-
-    public int[] getScreenSize() {
-        // https://stackoverflow.com/questions/10991194/android-displaymetrics-returns-incorrect-screen-size-in-pixels-on-ics
-        Display display = getWindowManager().getDefaultDisplay();
-        DisplayMetrics metrics = new DisplayMetrics();
-
-        display.getRealMetrics(metrics);
-
-        int width = metrics.widthPixels;
-        int height = metrics.heightPixels;
-
-        return new int[]{width, height};
-    }
-
 }

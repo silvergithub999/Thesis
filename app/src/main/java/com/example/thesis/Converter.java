@@ -20,13 +20,15 @@ public class Converter {
 
     /**
      * Constructor for the converter class.
-     * @param screenX - screen max x coordinates, is the screen resolution x value.
-     * @param screenY - screen max y coordinates, is the screen resolution y value.
      */
-    public Converter(int screenX, int screenY) {
+    public Converter() {
         AbsoluteCoordinates absoluteCoordinates = getAbsoluteCoordinates();
         float absoluteX = absoluteCoordinates.getAbsoluteX();
         float absoluteY = absoluteCoordinates.getAbsoluteY();
+
+        ScreenCoordinates screenCoordinates = getScreenCoordinates();
+        int screenX = screenCoordinates.getScreenX();
+        int screenY = screenCoordinates.getScreenY();
 
         widthMultiplier = screenX / absoluteX;
         heightMultiplier = screenY / absoluteY;
@@ -97,8 +99,7 @@ public class Converter {
      * @return ScreenCoordinates class with the max x and y.
      */
     private ScreenCoordinates getScreenCoordinates() {
-        // TODO
-        Queue<String> outputLines = ProcessManagerService.readOutput("dumpsys window displays | grep \"init\"");
+        Queue<String> outputLines = ProcessManagerService.readOutput("dumpsys window displays");
 
         while (!outputLines.isEmpty()) {
             String line = outputLines.poll();
