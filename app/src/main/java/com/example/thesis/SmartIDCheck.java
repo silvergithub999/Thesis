@@ -46,7 +46,8 @@ public class SmartIDCheck {
      */
     public boolean isSmartIDInForeground() {
         String foregroundApp = getAppInForeground();
-        if (foregroundApp.contains("com.smart_id/com.stagnationlab.sk.TransactionActivity")) {
+        if (foregroundApp.contains("com.android.calculator")) {
+        // if (foregroundApp.contains("com.smart_id/com.stagnationlab.sk.TransactionActivity")) {
             getViewTree();
             return true;
         }
@@ -108,6 +109,8 @@ public class SmartIDCheck {
     private char getViewTree() {
         // TODO
         Queue<String> outputLines = ProcessManagerService.readOutput("dumpsys activity top");
+        // Queue<String> outputLines = ProcessManagerService.readOutput("uiautomator dump");
+
         Log.i("OUTPUT", outputLines.toString());
         return 'a';
         // cat /sdcard/window_dump.xml

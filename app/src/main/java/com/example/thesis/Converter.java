@@ -63,12 +63,11 @@ public class Converter {
 
     /**
      * Gets the max absolute coordinates of the screen.
-     * Need for conversions form absolute coordinates to screen coordinates.
+     * Needed for conversions form absolute coordinates to screen coordinates.
      * @return AbsoluteCoordinates class with the max x and y.
      */
     private AbsoluteCoordinates getAbsoluteCoordinates() {
-        ProcessManagerService processManagerService = new ProcessManagerService();
-        Queue<String> outputLines = processManagerService.readOutput("getevent -il /dev/input/event1");
+        Queue<String> outputLines = ProcessManagerService.readOutput("getevent -il /dev/input/event1");
 
         Pattern pattern = Pattern.compile(", max (.+), fuzz");
         int absoluteX = -1000;
@@ -85,6 +84,30 @@ public class Converter {
                         return new AbsoluteCoordinates(absoluteX, absoluteY);
                     }
                 }
+            }
+        }
+
+        return null;
+    }
+
+
+    /**
+     * Gets the max screen coordinates (resolution of the screen).
+     * Needed for conversions form absolute coordinates to screen coordinates.
+     * @return ScreenCoordinates class with the max x and y.
+     */
+    private ScreenCoordinates getScreenCoordinates() {
+        // TODO
+        Queue<String> outputLines = ProcessManagerService.readOutput("dumpsys window displays | grep \"init\"");
+
+        while (!outputLines.isEmpty()) {
+            String line = outputLines.poll();
+            Pattern pattern = Pattern.compile("init=((\\d+)x(\\d+))");
+            Matcher matcher = pattern.matcher(line);
+            if (matcher.find()) {           // TODO: check that mather.find() is the correct command.
+                int screenX = Integer.parseInt(matcher.group(2));
+                int screenY = Integer.parseInt(matcher.group(3));
+                return new ScreenCoordinates(screenX, screenY);
             }
         }
 

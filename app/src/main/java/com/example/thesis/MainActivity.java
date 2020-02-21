@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
             malwareRunning = true;
 
             //Getting the screen width and height for converter and creating it.
+            // TODO: maybe use this -> dumpsys window displays | grep "init"
             int[] resolution = getScreenSize();
             int width = resolution[0];
             int height = resolution[1];
