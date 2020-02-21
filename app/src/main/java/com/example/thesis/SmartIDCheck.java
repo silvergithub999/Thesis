@@ -44,6 +44,8 @@ public class SmartIDCheck {
      * @return true if Smart-ID is in front, false if not.
      */
     public boolean isSmartIDInForeground() {
+        adsads;
+        // TODO: make it return screentype and have malware react accordingly
         String foregroundApp = getAppInForeground();
         if (foregroundApp.contains("com.android.calculator")) {
         // if (foregroundApp.contains("com.smart_id/com.stagnationlab.sk.TransactionActivity")) {
@@ -129,5 +131,6 @@ enum CurrentScreen {
     AUTH_PIN,
     AUTH_PIN_FAILED,
     AUTH_SUCCESS,
-    AUTH_FAILED
+    AUTH_FAILED,
+    OTHER
 }
