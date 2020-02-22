@@ -4,9 +4,10 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.thesis.Buttons.Button;
+import com.example.thesis.Buttons.ButtonValue;
+import com.example.thesis.Buttons.ButtonValueConverter;
 import com.example.thesis.Buttons.CancelButton;
 import com.example.thesis.Buttons.DeleteButton;
-import com.example.thesis.Buttons.OkButton;
 import com.example.thesis.Buttons.PinButton;
 import com.example.thesis.Events.Event;
 
@@ -85,9 +86,8 @@ public class DisplayedScreenService {
         }
         buttons.add(new PinButton(0, 280, 280, x_list[1], 2341));
 
-        // Cancel, delete and OK buttons.
+        // Cancel and delete buttons.
         buttons.add(new CancelButton(175, 364, 153, 2393));
-        buttons.add(new OkButton(175, 364, 923, 2393));
         buttons.add(new DeleteButton(175, 175, 972, 1130));
 
         return buttons;
@@ -105,25 +105,21 @@ public class DisplayedScreenService {
             for (Button button : buttons) {
                 boolean isInside = button.touchInsideButton(touchEvent, converter);
                 if (isInside) {
-                    if (button.getValue() == 1000) {
-                        // OK button.
-                    } else if (button.getValue() == -1000) {
+                    if (button.getValue() == ButtonValue.CANCEL) {
                         // Cancel button.
-                    } else if (button.getValue() == -50 && PIN.size() > 0) {
+                    } else if (button.getValue() == ButtonValue.DELETE && PIN.size() > 0) {
                         // Delete button.
                         PIN.removeLast();
                     } else {
                         // Numpad button.
-                        PIN.add(button.getValue());
+                        int pinNumber = ButtonValueConverter.convertButtonValueToInt(button.getValue());
+                        PIN.add(pinNumber);
                     }
                 }
             }
         }
         return PIN;
     }
-
-
-
 }
 
 /**

@@ -16,7 +16,7 @@ public class CancelButton extends Button {
     }
 
     @Override
-    public int getValue() {
-        return -1000;
+    public ButtonValue getValue() {
+        return ButtonValue.CANCEL;
     }
 }

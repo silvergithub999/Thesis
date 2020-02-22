@@ -2,17 +2,18 @@ package com.example.thesis;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 
-import com.example.thesis.Coordinates.ScreenCoordinates;
+import com.example.thesis.Buttons.Button;
+import com.example.thesis.Buttons.ButtonValue;
+import com.example.thesis.Buttons.ButtonValueConverter;
+import com.example.thesis.Buttons.PinButton;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
-import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
@@ -22,10 +23,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static org.opencv.core.CvType.CV_32FC1;
-
 
 public class ImageService {
+    // TODO: add success and failure images aswell.
+    // TODO: there seems to be no OK image.
     private Process process;
     private Context context;
     private Map<Integer, Mat> numpadImages;
@@ -37,7 +38,8 @@ public class ImageService {
     }
 
     public void mainCode() {
-        getButtonLocationsFromScreenshot();
+        getPinButtonLocationsFromScreenshot();
+        getOtherButtonLocationsFromScreenshot();
     }
 
 
@@ -47,9 +49,13 @@ public class ImageService {
      * https://www.programcreek.com/java-api-examples/?class=org.opencv.imgproc.Imgproc&method=matchTemplate
      * https://docs.opencv.org/3.4/de/da9/tutorial_template_matching.html
      */
-    private void getButtonLocationsFromScreenshot() {
+    public Map<Integer, Button> getPinButtonLocationsFromScreenshot() {
+        Map<Integer, Button> buttonLocations = new HashMap<>();
+
         Mat screenshot = getScreenshot();
         Set<Integer> numImgSet = numpadImages.keySet();
+
+        int heightWidth = 280;
 
         for (Integer imgValue : numImgSet) {
             Mat button = numpadImages.get(imgValue);
@@ -57,7 +63,7 @@ public class ImageService {
             // Resizing button.
             // TODO: maybe add programatically resizing.
             Mat buttonResize = new Mat();
-            Size size = new Size(280,280);
+            Size size = new Size(heightWidth, heightWidth);
             Imgproc.resize(button, buttonResize, size);
             button = buttonResize;
 
@@ -72,10 +78,16 @@ public class ImageService {
 
             Core.MinMaxLocResult mmr = Core.minMaxLoc(outputImage);
             Point matchLoc = mmr.maxLoc;
-            ScreenCoordinates screenCoordinates = new ScreenCoordinates((int) matchLoc.x, (int) matchLoc.y);
 
-            Log.i("Found Button", "Button " + imgValue + " is in Coordinates: " + screenCoordinates);
+            buttonLocations.put(imgValue, new PinButton(imgValue, heightWidth, heightWidth, (int) matchLoc.x, (int) matchLoc.y));
         }
+
+        return buttonLocations;
+    }
+
+
+    private void getOtherButtonLocationsFromScreenshot() {
+
     }
 
 
@@ -99,33 +111,51 @@ public class ImageService {
     }
 
 
-    private Map<Integer, Mat> getNumpadImages() {
-        Map<Integer, Mat> pinImages = getPinImages();
-        Map<Integer, Mat> otherImages = getOtherImages();
-        pinImages.putAll(otherImages);
-        return pinImages;
-    }
-
-    private Map<Integer, Mat> getPinImages() {
-        Map<Integer, Mat> pinImages = new HashMap<>();
-
-        Resources resources = context.getResources();
-        // for (int i = 0; i < 10; i++) {
-        for (int i = 1; i < 10; i++) {   // TODO: this is for testing, upper row is correct.
-            try {
-                int resourceId = resources.getIdentifier("button_" + i, "drawable", context.getPackageName());
-                Mat img = Utils.loadResource(context, resourceId);
-                pinImages.put(i, img);
-            } catch (IOException error) {
-                Log.e("ImageService", "Error, could not get image: " + error.getMessage());
-            }
+    private Map<ButtonValue, Mat> getPinButtonImages() {
+        Map<ButtonValue, Mat> pinImages = new HashMap<>();
+        for (int i = 1; i < 10; i++) {
+            Mat img = getButtonImage(Integer.toString(i));
+            ButtonValue buttonValue = ButtonValueConverter.convertPinIntToButtonValue(i);
+            pinImages.put(buttonValue, img);
         }
         return pinImages;
     }
 
-    private Map<Integer, Mat> getOtherImages() {
-        // TODO
-        return new HashMap<>();
+
+    private Map<ButtonValue, Mat> getOtherButtonImages() {
+        Map<ButtonValue, Mat> otherButtonImages = new HashMap<>();
+        otherButtonImages.put(ButtonValue.CANCEL, getButtonImage("cancel"));
+        otherButtonImages.put(ButtonValue.OK, getButtonImage("ok"));
+        otherButtonImages.put(ButtonValue.DELETE, getButtonImage("delete"));      // TODO: this shows up later.
+        return otherButtonImages;
+    }
+
+
+    /**
+     * Gets an image out of the drawable folder with the given name.
+     * @param name - name of the image.
+     * @return the image with the given name.
+     */
+    private Mat getImage(String name) {
+        Mat img = null;
+        try {
+            Resources resources = context.getResources();
+            int resourceId = resources.getIdentifier(name, "drawable", context.getPackageName());
+            img = Utils.loadResource(context, resourceId);
+
+        } catch (IOException error) {
+            Log.e("ImageService", "Error, could not get image: " + error.getMessage());
+        }
+        return img;
+    }
+
+    /**
+     * Runs getImage with name: "button_" + name.
+     * @param name - unique value at the end of "button_".
+     * @return image that with the name "button_name".
+     */
+    private Mat getButtonImage(String name) {
+        return getImage("button_" + name);
     }
 
 

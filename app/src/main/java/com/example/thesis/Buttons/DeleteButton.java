@@ -17,7 +17,7 @@ public class DeleteButton extends Button {
     }
 
     @Override
-    public int getValue() {
-        return -50;
+    public ButtonValue getValue() {
+        return ButtonValue.DELETE;
     }
 }

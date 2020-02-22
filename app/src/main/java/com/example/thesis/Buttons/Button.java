@@ -7,7 +7,7 @@ import com.example.thesis.Events.Event;
 import java.util.Deque;
 
 /**
- * Class to extend for cancel, ok and PIN buttons.
+ * Class to extend for cancel, delete and PIN buttons.
  */
 public abstract class Button {
     final private int height;
@@ -65,7 +65,7 @@ public abstract class Button {
      * Returns the value of the button.
      * @return numpad (0-9), cancel (-1000), ok (1000), delete (-50).
      */
-    public abstract int getValue();
+    public abstract ButtonValue getValue();
 
 
     /**
