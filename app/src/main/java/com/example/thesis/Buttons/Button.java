@@ -63,9 +63,9 @@ public abstract class Button {
 
     /**
      * Returns the value of the button.
-     * @return numpad (0-9), cancel (-1000), ok (1000), delete (-50).
+     * @return numpad (0-9), cancel (-1000),, delete (-500).
      */
-    public abstract ButtonValue getValue();
+    public abstract int getValue();
 
 
     /**

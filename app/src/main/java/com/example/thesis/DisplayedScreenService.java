@@ -4,8 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.thesis.Buttons.Button;
-import com.example.thesis.Buttons.ButtonValue;
-import com.example.thesis.Buttons.ButtonValueConverter;
 import com.example.thesis.Buttons.CancelButton;
 import com.example.thesis.Buttons.DeleteButton;
 import com.example.thesis.Buttons.PinButton;
@@ -105,15 +103,14 @@ public class DisplayedScreenService {
             for (Button button : buttons) {
                 boolean isInside = button.touchInsideButton(touchEvent, converter);
                 if (isInside) {
-                    if (button.getValue() == ButtonValue.CANCEL) {
-                        // Cancel button.
-                    } else if (button.getValue() == ButtonValue.DELETE && PIN.size() > 0) {
-                        // Delete button.
+                    if (button.getValue() == -1000) {
+                        // Cancel button (-1000).
+                    } else if (button.getValue() == -500 && PIN.size() > 0) {
+                        // Delete button (-500).
                         PIN.removeLast();
                     } else {
                         // Numpad button.
-                        int pinNumber = ButtonValueConverter.convertButtonValueToInt(button.getValue());
-                        PIN.add(pinNumber);
+                        PIN.add(button.getValue());
                     }
                 }
             }

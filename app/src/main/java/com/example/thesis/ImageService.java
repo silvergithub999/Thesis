@@ -5,9 +5,8 @@ import android.content.res.Resources;
 import android.util.Log;
 
 import com.example.thesis.Buttons.Button;
-import com.example.thesis.Buttons.ButtonValue;
-import com.example.thesis.Buttons.ButtonValueConverter;
 import com.example.thesis.Buttons.PinButton;
+import com.example.thesis.Coordinates.ScreenCoordinates;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
@@ -26,20 +25,52 @@ import java.util.Set;
 
 public class ImageService {
     // TODO: add success and failure images aswell.
-    // TODO: there seems to be no OK image.
+    // TODO: add PIN1 and PIN2 text images and check error text.
     private Process process;
     private Context context;
-    private Map<Integer, Mat> numpadImages;
+
 
     public ImageService(Context context) {
         this.context = context;
         this.process = ProcessManagerService.getRootProcess();
-        this.numpadImages = getNumpadImages();
     }
 
     public void mainCode() {
-        getPinButtonLocationsFromScreenshot();
-        getOtherButtonLocationsFromScreenshot();
+        // Getting pin number buttons.
+        Map<Integer, Mat> pinImages = getPinButtonImages();
+        Map<Integer, Button> pinButtons = getPinButtonLocationsFromScreenshot(pinImages);
+
+        // Getting other buttons.
+        Map<Integer, Mat> otherImages = getOtherButtonImages();
+        Map<Integer, Button> otherButtons = getOtherButtonLocationsFromScreenshot(otherImages);
+    }
+
+
+
+    public Map<Integer, Button> getPinButtonLocationsFromScreenshot(Map<Integer, Mat> pinImages) {
+        Map<Integer, Button> buttonLocations = new HashMap<>();
+        int heightWidth = 280;
+
+        Set<Integer> numImgSet = pinImages.keySet();
+        for (Integer imgValue : numImgSet) {
+            Mat button = pinImages.get(imgValue);
+
+            // Resizing button. TODO: maybe add programatically resizing.
+            Mat buttonResize = new Mat();
+            Size size = new Size(heightWidth, heightWidth);
+            Imgproc.resize(button, buttonResize, size);
+
+            // Getting the location.
+            ScreenCoordinates screenCoordinates = findButtonLocationOnImage(buttonResize);
+            buttonLocations.put(imgValue, new PinButton(imgValue, heightWidth, heightWidth, screenCoordinates.getScreenX(), screenCoordinates.getScreenY()));
+        }
+        return buttonLocations;
+    }
+
+
+    private Map<Integer, Button> getOtherButtonLocationsFromScreenshot(Map<Integer, Mat> otherImages) {
+        // TODO
+        return null;
     }
 
 
@@ -49,46 +80,22 @@ public class ImageService {
      * https://www.programcreek.com/java-api-examples/?class=org.opencv.imgproc.Imgproc&method=matchTemplate
      * https://docs.opencv.org/3.4/de/da9/tutorial_template_matching.html
      */
-    public Map<Integer, Button> getPinButtonLocationsFromScreenshot() {
-        Map<Integer, Button> buttonLocations = new HashMap<>();
-
+    private ScreenCoordinates findButtonLocationOnImage(Mat button) {
         Mat screenshot = getScreenshot();
-        Set<Integer> numImgSet = numpadImages.keySet();
 
-        int heightWidth = 280;
+        // Template matching.
+        int result_cols = screenshot.cols() - button.cols() + 1;
+        int result_rows = screenshot.rows() - button.rows() + 1;
+        Mat outputImage = new Mat(result_rows, result_cols, CvType.CV_32FC1);
 
-        for (Integer imgValue : numImgSet) {
-            Mat button = numpadImages.get(imgValue);
+        Imgproc.matchTemplate(screenshot, button, outputImage, Imgproc.TM_CCOEFF);
 
-            // Resizing button.
-            // TODO: maybe add programatically resizing.
-            Mat buttonResize = new Mat();
-            Size size = new Size(heightWidth, heightWidth);
-            Imgproc.resize(button, buttonResize, size);
-            button = buttonResize;
+        Core.MinMaxLocResult mmr = Core.minMaxLoc(outputImage);
+        Point matchLoc = mmr.maxLoc;
 
-
-            // Template matching.
-            int result_cols = screenshot.cols() - button.cols() + 1;
-            int result_rows = screenshot.rows() - button.rows() + 1;
-            Mat outputImage = new Mat(result_rows, result_cols, CvType.CV_32FC1);
-
-            Imgproc.matchTemplate(screenshot, button, outputImage, Imgproc.TM_CCOEFF);
-
-
-            Core.MinMaxLocResult mmr = Core.minMaxLoc(outputImage);
-            Point matchLoc = mmr.maxLoc;
-
-            buttonLocations.put(imgValue, new PinButton(imgValue, heightWidth, heightWidth, (int) matchLoc.x, (int) matchLoc.y));
-        }
-
-        return buttonLocations;
+        return new ScreenCoordinates((int) matchLoc.x, (int) matchLoc.y);
     }
 
-
-    private void getOtherButtonLocationsFromScreenshot() {
-
-    }
 
 
     private Mat getScreenshot() {
@@ -111,22 +118,20 @@ public class ImageService {
     }
 
 
-    private Map<ButtonValue, Mat> getPinButtonImages() {
-        Map<ButtonValue, Mat> pinImages = new HashMap<>();
+    private Map<Integer, Mat> getPinButtonImages() {
+        Map<Integer, Mat> pinImages = new HashMap<>();
         for (int i = 1; i < 10; i++) {
             Mat img = getButtonImage(Integer.toString(i));
-            ButtonValue buttonValue = ButtonValueConverter.convertPinIntToButtonValue(i);
-            pinImages.put(buttonValue, img);
+            pinImages.put(i, img);
         }
         return pinImages;
     }
 
 
-    private Map<ButtonValue, Mat> getOtherButtonImages() {
-        Map<ButtonValue, Mat> otherButtonImages = new HashMap<>();
-        otherButtonImages.put(ButtonValue.CANCEL, getButtonImage("cancel"));
-        otherButtonImages.put(ButtonValue.OK, getButtonImage("ok"));
-        otherButtonImages.put(ButtonValue.DELETE, getButtonImage("delete"));      // TODO: this shows up later.
+    private Map<Integer, Mat> getOtherButtonImages() {
+        Map<Integer, Mat> otherButtonImages = new HashMap<>();
+        otherButtonImages.put(-1000, getButtonImage("cancel"));
+        otherButtonImages.put(-500, getButtonImage("delete"));      // TODO: this shows up later.
         return otherButtonImages;
     }
 

@@ -4,20 +4,7 @@ package com.example.thesis.Buttons;
  * Class for the Smart-ID authenticating numpad digit button.
  */
 public class PinButton extends Button{
-    private ButtonValue value;
-
-    /**
-     * Numpad button constructor.
-     * @param value - buttonValue of the pin numpad button: ZERO, ONE, ..., NINE
-     * @param height - height of the button.
-     * @param width - width of the button.
-     * @param locationX - top-left x coordinate of the button.
-     * @param locationY - top-left y coordinate of the button.
-     */
-    public PinButton(ButtonValue value, int height, int width, int locationX, int locationY) {
-        super(height, width, locationX, locationY);
-        this.value = value;
-    }
+    private int value;
 
     /**
      * Numpad button constructor.
@@ -29,11 +16,11 @@ public class PinButton extends Button{
      */
     public PinButton(int value, int height, int width, int locationX, int locationY) {
         super(height, width, locationX, locationY);
-        this.value = ButtonValueConverter.convertPinIntToButtonValue(value);
+        this.value = value;
     }
 
     @Override
-    public ButtonValue getValue() {
+    public int getValue() {
         return this.value;
     }
 }
