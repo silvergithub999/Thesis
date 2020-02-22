@@ -1,5 +1,6 @@
 package com.example.thesis;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.example.thesis.Buttons.Button;
@@ -29,12 +30,13 @@ public class DisplayedScreenService {
     private ImageService imageService;
 
 
-    public DisplayedScreenService() {
+    public DisplayedScreenService(Context context) {
         this.rootProcess = ProcessManagerService.getRootProcess();
         this.bufferedReaderInput = new BufferedReader(new InputStreamReader(rootProcess.getInputStream()));
         this.bufferedReaderErrors = new BufferedReader(new InputStreamReader(rootProcess.getErrorStream()));  // TODO: make it read errors as well
 
-        this.imageService = new ImageService();
+        this.imageService = new ImageService(context);
+        this.imageService.mainCode(); // TODO
     }
 
 
