@@ -6,14 +6,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.util.Queue;
-
 public class DatabaseService extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "thesis.db";
 
     public static final String TABLE_NAME = "pins_table";
 
-    public static final String ID = "PIN_ID";
+    public static final String ID = "ID";
     public static final String PIN = "PIN_VALUE";
 
     public DatabaseService(Context context) {
@@ -45,9 +43,9 @@ public class DatabaseService extends SQLiteOpenHelper {
         // TODO: maybe use querybuilder.
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor result = db.rawQuery("select PIN_VALUE from " + TABLE_NAME +
-                "where PIN_ID = " + id, null);
+                " where ID = " + id, null);
 
-        if (result.getCount() == 0) {
+        if (result.getCount() != 0) {
             StringBuffer stringBuffer = new StringBuffer();
             result.moveToNext();
             return result.getString(1);
