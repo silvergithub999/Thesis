@@ -38,7 +38,7 @@ public class DatabaseService extends SQLiteOpenHelper {
         contentValues.put(ID, id);
         contentValues.put(PIN, value);
         long result = db.insert(TABLE_NAME, null, contentValues);
-        return result == -1 ? false : true;
+        return result != -1;
     }
 
     public String getPIN(int id) {
