@@ -13,7 +13,7 @@
         android:layout_marginBottom="640dp"
         android:background="#C62828"
         android:gravity="center"
-        android:text="Malware Thesis"
+        android:text="Thesis"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textColor="@android:color/white"
         android:textSize="36sp"
@@ -60,5 +60,30 @@
             android:layout_height="wrap_content"
             android:onClick="stopMalware"
             android:text="Stop Malware" />
+
+        <Switch
+            android:id="@+id/switchAutoSend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Switch"
+            tools:text="Auto enter PIN" />
+
+        <TextView
+            android:id="@+id/textPIN1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="TextView"
+            tools:text="PIN1: " />
+
+        <TextView
+            android:id="@+id/textPIN2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="TextView"
+            tools:text="PIN2: " />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

