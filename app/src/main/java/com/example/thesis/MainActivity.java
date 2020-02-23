@@ -3,11 +3,9 @@ package com.example.thesis;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import org.opencv.android.OpenCVLoader;
 
 public class MainActivity extends AppCompatActivity {
     private Malware malware;
@@ -21,25 +19,21 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void startMalware(View view) {
-
-        // TODO: add a check that checks for root access!
-
-        if (!OpenCVLoader.initDebug()) {
-            Log.e(this.getClass().getSimpleName(), "  OpenCVLoader.initDebug(), not working.");
+        if (CheckRoot.hasRootAccess()) {
+            if (!malwareRunning) {
+                malwareRunning = true;
+                malware = new Malware(this);
+                Thread malwareThread = new Thread(malware, "Malware Thread");
+                malwareThread.start();
+                Toast.makeText(this, "Started malware!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Malware is already running!", Toast.LENGTH_SHORT).show();
+            }
         } else {
-            Log.d(this.getClass().getSimpleName(), "  OpenCVLoader.initDebug(), working.");
+            Toast.makeText(this, "Can't start, has no root access!", Toast.LENGTH_SHORT).show();
         }
 
 
-        if (!malwareRunning) {
-            malwareRunning = true;
-            malware = new Malware(this);
-            Thread malwareThread = new Thread(malware, "Malware Thread");
-            malwareThread.start();
-            Toast.makeText(this, "Started malware!", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Malware is already running!", Toast.LENGTH_SHORT).show();
-        }
     }
 
     public void stopMalware(View view) {

@@ -3,6 +3,7 @@ package com.example.thesis.Buttons;
 import com.example.thesis.Converter;
 import com.example.thesis.Coordinates.ScreenCoordinates;
 import com.example.thesis.Events.Event;
+import com.example.thesis.ProcessManagerService;
 
 import java.util.Deque;
 
@@ -72,6 +73,15 @@ public abstract class Button {
      * This sends a touch event to the buttons location.
      */
     public void touchButton() {
-        // TODO: can remove EventSender class.
+        int tapLocationX = locationX + width / 2;
+        int tapLocationY = locationY + height / 2;
+
+        StringBuilder command = new StringBuilder();
+        command.append("input tap ");
+        command.append(tapLocationX).append(" ");
+        command.append(tapLocationY);
+
+        Process process = ProcessManagerService.runRootCommand(command.toString());
+        process.destroy();
     }
 }

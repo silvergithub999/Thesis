@@ -28,6 +28,7 @@ import java.util.Set;
 public class ImageService {
     // TODO: add success and failure images aswell.
     // TODO: add PIN1 and PIN2 text images and check error text.
+
     private Process process;
     private Context context;
 
@@ -36,6 +37,12 @@ public class ImageService {
         this.context = context;
         this.process = ProcessManagerService.getRootProcess();
     }
+
+
+    public void onClose() {
+        process.destroy();
+    }
+
 
     public void mainCode() {
         // Taking screenshot.
@@ -65,7 +72,7 @@ public class ImageService {
         for (Integer imgValue : numImgSet) {
             Mat button = pinImages.get(imgValue);
 
-            // Resizing button. TODO: maybe add programatically resizing.
+            // Resizing button.
             Mat buttonResize = new Mat();
             Size size = new Size(heightWidth, heightWidth);
             Imgproc.resize(button, buttonResize, size);
@@ -84,10 +91,6 @@ public class ImageService {
         Set<Integer> numImgSet = otherImages.keySet();
         for (Integer imgValue : numImgSet) {
             Mat button = otherImages.get(imgValue);
-
-            // TODO: maybe add button resizing.
-
-            // Getting the location.
             ScreenCoordinates screenCoordinates = findButtonLocationOnImage(button, screenShot);
             buttonLocations.put(imgValue, new PinButton(imgValue, button.cols(), button.rows(), screenCoordinates.getScreenX(), screenCoordinates.getScreenY()));
         }
@@ -123,22 +126,11 @@ public class ImageService {
 
 
     private Mat getScreenshot() {
-        String savePath = "/mnt/sdcard/Download/success.png"; // TODO: maybe use the hint
-        takeScreenshot(savePath);
-        Mat img = loadImageFromDownloads("success.png");
+        String savePath = Environment.getExternalStorageDirectory().getPath();
+        String name = "success.png";
+        takeScreenshot(savePath + " " + name);
+        Mat img = loadImageFromDownloads(name);
         return img;
-
-        /*
-        Mat img = null;
-        try {
-            Resources resources = context.getResources();
-            int resourceId = resources.getIdentifier("screenshot", "drawable", context.getPackageName());
-            img = Utils.loadResource(context, resourceId);
-        } catch (IOException error) {
-            Log.e("ImageService", "Error, could not get image: " + error.getMessage());
-        }
-        return img;
-        */
     }
 
 
@@ -155,7 +147,7 @@ public class ImageService {
     private Map<Integer, Mat> getOtherButtonImages() {
         Map<Integer, Mat> otherButtonImages = new HashMap<>();
         otherButtonImages.put(-1000, getButtonImage("cancel"));
-        otherButtonImages.put(-500, getButtonImage("delete"));      // TODO: this shows up later.
+        otherButtonImages.put(-500, getButtonImage("delete"));
         return otherButtonImages;
     }
 
@@ -190,13 +182,12 @@ public class ImageService {
 
 
     private Mat loadImageFromDownloads(String name) {
-        // TODO: maybe read image from shell. Maybe programatically add permission.
         File file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         return Imgcodecs.imread(file.getAbsolutePath() + "/" + name);
     }
 
 
     private void takeScreenshot(String savePath) {
-        // ProcessManagerService.sendCommand(process, "screencap " + savePath);
+        ProcessManagerService.sendCommand(process, "screencap " + savePath);
     }
 }

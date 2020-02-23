@@ -76,7 +76,7 @@ public final class ProcessManagerService {
         sendCommand(process, command);
 
         BufferedReader bufferedReaderInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        BufferedReader bufferedReaderErrors = new BufferedReader(new InputStreamReader(process.getErrorStream()));  // TODO: make it read errors aswell
+        BufferedReader bufferedReaderErrors = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
         try {
             // Reading lines.

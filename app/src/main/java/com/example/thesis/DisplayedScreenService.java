@@ -1,6 +1,5 @@
 package com.example.thesis;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.example.thesis.Buttons.Button;
@@ -11,33 +10,29 @@ import com.example.thesis.Events.Event;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
 /**
- * This class checks, if Smart-ID is the app in front.
- * And what view is open in Smart-ID
+ * This class checks, if DisplayedScreen type is in front.
  */
 public class DisplayedScreenService {
     private Process rootProcess;
     private BufferedReader bufferedReaderInput;
     private BufferedReader bufferedReaderErrors;
 
-    private ImageService imageService;
 
-
-    public DisplayedScreenService(Context context) {
+    /**
+     * DisplayedScreenService constructor.
+     */
+    public DisplayedScreenService() {
         this.rootProcess = ProcessManagerService.getRootProcess();
         this.bufferedReaderInput = new BufferedReader(new InputStreamReader(rootProcess.getInputStream()));
-        this.bufferedReaderErrors = new BufferedReader(new InputStreamReader(rootProcess.getErrorStream()));  // TODO: make it read errors as well
-
-        this.imageService = new ImageService(context);
+        this.bufferedReaderErrors = new BufferedReader(new InputStreamReader(rootProcess.getErrorStream()));
     }
 
 
@@ -49,13 +44,13 @@ public class DisplayedScreenService {
     }
 
 
+    /**
+     * Checks what app is in the foreground and converts it to DisplayedScreen.
+     * @return DisplayedScreen of what is in the foreground currently.
+     */
     public DisplayedScreen getCurrentScreen() {
         String foregroundApp = getAppInForeground();
-        // if (foregroundApp.contains("com.android.calculator")) {
-        // if (foregroundApp.contains("com.smart_id/com.stagnationlab.sk.TransactionActivity")) {
-        if (foregroundApp.contains("com.smart_id")) {
-        // TODO: find out the type and add thsoe types here.
-            this.imageService.mainCode();
+        if (foregroundApp.contains("com.smart_id/com.stagnationlab.sk.TransactionActivity")) {
             return DisplayedScreen.AUTH_PIN_1;
         } else {
             return DisplayedScreen.OTHER;
@@ -63,6 +58,10 @@ public class DisplayedScreenService {
     }
 
 
+    /**
+     * Finds out what app (package) is in the foreground. Uses  "dumpsys window windows | grep "mCurrentFocus" ".
+     * @return name of the app in the foreground.
+     */
     private String getAppInForeground() {
         try {
             ProcessManagerService.sendCommand(rootProcess, "dumpsys window windows | grep \"mCurrentFocus\"");
@@ -95,6 +94,12 @@ public class DisplayedScreenService {
     }
 
 
+    /**
+     * Finds what buttons the user pressed from touchEvents.
+     * Note: also empties the touchEvents array during the process.
+     * @param touchEvents - all the user touch events when the smart-id auth screen was open.
+     * @return returns a Queue of integers that is the PIN.
+     */
     public Queue<Integer> extractPIN(Queue<Event> touchEvents) {
         Deque<Integer> PIN = new LinkedList<>();
         Converter converter = new Converter();
@@ -109,6 +114,8 @@ public class DisplayedScreenService {
                 if (isInside) {
                     if (button.getValue() == -1000) {
                         // Cancel button (-1000).
+                        touchEvents.clear();
+                        PIN.clear();
                     } else if (button.getValue() == -500 && PIN.size() > 0) {
                         // Delete button (-500).
                         PIN.removeLast();
@@ -123,8 +130,11 @@ public class DisplayedScreenService {
     }
 
 
+    /**
+     * Takes the PIN Queue and sends the events to the correct button coordinates.
+     * @param PIN - the PIN, which buttons to press.
+     */
     public void sendPIN(Queue<Integer> PIN) {
-        // TODO: maybe not the correct class for this
         Queue<Integer> PIN_copy = new LinkedList<>(PIN);
         Map<Integer, Button> buttons = getButtons();
 

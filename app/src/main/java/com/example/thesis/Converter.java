@@ -105,7 +105,7 @@ public class Converter {
             String line = outputLines.poll();
             Pattern pattern = Pattern.compile("init=((\\d+)x(\\d+))");
             Matcher matcher = pattern.matcher(line);
-            if (matcher.find()) {           // TODO: check that mather.find() is the correct command.
+            if (matcher.find()) {
                 int screenX = Integer.parseInt(matcher.group(2));
                 int screenY = Integer.parseInt(matcher.group(3));
                 return new ScreenCoordinates(screenX, screenY);

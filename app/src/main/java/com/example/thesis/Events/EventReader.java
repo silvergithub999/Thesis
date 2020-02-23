@@ -63,7 +63,6 @@ public class EventReader implements Runnable {
         rootProcess = ProcessManagerService.runRootCommand("od /dev/input/event1");
         BufferedReader bufferedReaderInput = new BufferedReader(new InputStreamReader(rootProcess.getInputStream()));
         BufferedReader bufferedReaderErrors = new BufferedReader(new InputStreamReader(rootProcess.getErrorStream()));
-        // TODO: make it read errors aswell
 
         // Reading result.
         String line;
