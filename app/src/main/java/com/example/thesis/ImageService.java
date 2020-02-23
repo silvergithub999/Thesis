@@ -2,6 +2,7 @@ package com.example.thesis;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Environment;
 import android.util.Log;
 
 import com.example.thesis.Buttons.Button;
@@ -17,6 +18,7 @@ import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,18 +38,26 @@ public class ImageService {
     }
 
     public void mainCode() {
+        // Taking screenshot.
+        Mat screenshot = getScreenshot();
+
+        int b = 1;
+
         // Getting pin number buttons.
         Map<Integer, Mat> pinImages = getPinButtonImages();
-        Map<Integer, Button> pinButtons = getPinButtonLocationsFromScreenshot(pinImages);
+        Map<Integer, Button> pinButtons = getPinButtonLocationsFromScreenshot(pinImages, screenshot);
 
         // Getting other buttons.
         Map<Integer, Mat> otherImages = getOtherButtonImages();
-        Map<Integer, Button> otherButtons = getOtherButtonLocationsFromScreenshot(otherImages);
+        Map<Integer, Button> otherButtons = getOtherButtonLocationsFromScreenshot(otherImages, screenshot);
+
+        Log.i("PIN buttons", pinButtons.toString());
+        Log.i("Other buttons", otherButtons.toString());
     }
 
 
 
-    public Map<Integer, Button> getPinButtonLocationsFromScreenshot(Map<Integer, Mat> pinImages) {
+    public Map<Integer, Button> getPinButtonLocationsFromScreenshot(Map<Integer, Mat> pinImages, Mat screenShot) {
         Map<Integer, Button> buttonLocations = new HashMap<>();
         int heightWidth = 280;
 
@@ -61,16 +71,27 @@ public class ImageService {
             Imgproc.resize(button, buttonResize, size);
 
             // Getting the location.
-            ScreenCoordinates screenCoordinates = findButtonLocationOnImage(buttonResize);
+            ScreenCoordinates screenCoordinates = findButtonLocationOnImage(buttonResize, screenShot);
             buttonLocations.put(imgValue, new PinButton(imgValue, heightWidth, heightWidth, screenCoordinates.getScreenX(), screenCoordinates.getScreenY()));
         }
         return buttonLocations;
     }
 
 
-    private Map<Integer, Button> getOtherButtonLocationsFromScreenshot(Map<Integer, Mat> otherImages) {
-        // TODO
-        return null;
+    private Map<Integer, Button> getOtherButtonLocationsFromScreenshot(Map<Integer, Mat> otherImages, Mat screenShot) {
+        Map<Integer, Button> buttonLocations = new HashMap<>();
+
+        Set<Integer> numImgSet = otherImages.keySet();
+        for (Integer imgValue : numImgSet) {
+            Mat button = otherImages.get(imgValue);
+
+            // TODO: maybe add button resizing.
+
+            // Getting the location.
+            ScreenCoordinates screenCoordinates = findButtonLocationOnImage(button, screenShot);
+            buttonLocations.put(imgValue, new PinButton(imgValue, button.cols(), button.rows(), screenCoordinates.getScreenX(), screenCoordinates.getScreenY()));
+        }
+        return buttonLocations;
     }
 
 
@@ -80,15 +101,18 @@ public class ImageService {
      * https://www.programcreek.com/java-api-examples/?class=org.opencv.imgproc.Imgproc&method=matchTemplate
      * https://docs.opencv.org/3.4/de/da9/tutorial_template_matching.html
      */
-    private ScreenCoordinates findButtonLocationOnImage(Mat button) {
-        Mat screenshot = getScreenshot();
+    private ScreenCoordinates findButtonLocationOnImage(Mat button, Mat image) {
+        Imgproc.cvtColor(button, button, CvType.channels(3));
+        Imgproc.cvtColor(image, image, CvType.channels(3));
+        button.convertTo(button, CvType.CV_8UC3);
+        image.convertTo(image, CvType.CV_8UC3);
 
         // Template matching.
-        int result_cols = screenshot.cols() - button.cols() + 1;
-        int result_rows = screenshot.rows() - button.rows() + 1;
-        Mat outputImage = new Mat(result_rows, result_cols, CvType.CV_32FC1);
+        int result_cols = image.cols() - button.cols() + 1;
+        int result_rows = image.rows() - button.rows() + 1;
+        Mat outputImage = new Mat(result_rows, result_cols, CvType.CV_8UC3);
 
-        Imgproc.matchTemplate(screenshot, button, outputImage, Imgproc.TM_CCOEFF);
+        Imgproc.matchTemplate(image, button, outputImage, Imgproc.TM_CCOEFF);
 
         Core.MinMaxLocResult mmr = Core.minMaxLoc(outputImage);
         Point matchLoc = mmr.maxLoc;
@@ -99,13 +123,12 @@ public class ImageService {
 
 
     private Mat getScreenshot() {
-        /*
-        String savePath = "/mnt/sdcard/Download/test.png"; // TODO: maybe use the hint
+        String savePath = "/mnt/sdcard/Download/success.png"; // TODO: maybe use the hint
         takeScreenshot(savePath);
-        Mat screenshot = loadImage(savePath);
-        return screenshot;
-        */
+        Mat img = loadImageFromDownloads("success.png");
+        return img;
 
+        /*
         Mat img = null;
         try {
             Resources resources = context.getResources();
@@ -115,6 +138,7 @@ public class ImageService {
             Log.e("ImageService", "Error, could not get image: " + error.getMessage());
         }
         return img;
+        */
     }
 
 
@@ -165,12 +189,14 @@ public class ImageService {
 
 
 
-    private Mat loadImage(String path) {
-        return Imgcodecs.imread(path);
+    private Mat loadImageFromDownloads(String name) {
+        // TODO: maybe read image from shell. Maybe programatically add permission.
+        File file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        return Imgcodecs.imread(file.getAbsolutePath() + "/" + name);
     }
 
 
     private void takeScreenshot(String savePath) {
-        ProcessManagerService.sendCommand(process, "screencap " + savePath);
+        // ProcessManagerService.sendCommand(process, "screencap " + savePath);
     }
 }

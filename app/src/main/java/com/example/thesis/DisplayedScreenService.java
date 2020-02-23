@@ -13,9 +13,12 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 
 /**
  * This class checks, if Smart-ID is the app in front.
@@ -35,7 +38,6 @@ public class DisplayedScreenService {
         this.bufferedReaderErrors = new BufferedReader(new InputStreamReader(rootProcess.getErrorStream()));  // TODO: make it read errors as well
 
         this.imageService = new ImageService(context);
-        this.imageService.mainCode(); // TODO
     }
 
 
@@ -50,8 +52,10 @@ public class DisplayedScreenService {
     public DisplayedScreen getCurrentScreen() {
         String foregroundApp = getAppInForeground();
         // if (foregroundApp.contains("com.android.calculator")) {
-        if (foregroundApp.contains("com.smart_id/com.stagnationlab.sk.TransactionActivity")) {
-            // TODO: find out the type and add thsoe types here.
+        // if (foregroundApp.contains("com.smart_id/com.stagnationlab.sk.TransactionActivity")) {
+        if (foregroundApp.contains("com.smart_id")) {
+        // TODO: find out the type and add thsoe types here.
+            this.imageService.mainCode();
             return DisplayedScreen.AUTH_PIN_1;
         } else {
             return DisplayedScreen.OTHER;
@@ -70,9 +74,8 @@ public class DisplayedScreenService {
     }
 
 
-    public List<Button> getButtons() {
-        // screencap /mnt/sdcard/Download/test.png
-        List<Button> buttons = new ArrayList<>();
+    public Map<Integer, Button> getButtons() {
+        Map<Integer, Button> buttons = new HashMap<>();
 
         // Pin buttons.
         int[] x_list = new int[]{202, 580, 958};
@@ -80,13 +83,13 @@ public class DisplayedScreenService {
             if (i % 3 == 0 && i != 0) {
                 y += 322;
             }
-            buttons.add(new PinButton(i + 1, 280, 280, x_list[i % 3], y));
+            buttons.put(i, new PinButton(i + 1, 280, 280, x_list[i % 3], y));
         }
-        buttons.add(new PinButton(0, 280, 280, x_list[1], 2341));
+        buttons.put(0, new PinButton(0, 280, 280, x_list[1], 2341));
 
         // Cancel and delete buttons.
-        buttons.add(new CancelButton(175, 364, 153, 2393));
-        buttons.add(new DeleteButton(175, 175, 972, 1130));
+        buttons.put(-1000, new CancelButton(175, 364, 153, 2393));
+        buttons.put(-500, new DeleteButton(175, 175, 972, 1130));
 
         return buttons;
     }
@@ -96,11 +99,12 @@ public class DisplayedScreenService {
         Deque<Integer> PIN = new LinkedList<>();
         Converter converter = new Converter();
 
-        List<Button> buttons = getButtons();
-
+        Map<Integer, Button> buttons = getButtons();
+        Set<Integer> buttonValues = buttons.keySet();
         while (!touchEvents.isEmpty()) {
             Event touchEvent = touchEvents.poll();
-            for (Button button : buttons) {
+            for (Integer value : buttonValues) {
+                Button button = buttons.get(value);
                 boolean isInside = button.touchInsideButton(touchEvent, converter);
                 if (isInside) {
                     if (button.getValue() == -1000) {
@@ -116,6 +120,18 @@ public class DisplayedScreenService {
             }
         }
         return PIN;
+    }
+
+
+    public void sendPIN(Queue<Integer> PIN) {
+        // TODO: maybe not the correct class for this
+        Queue<Integer> PIN_copy = new LinkedList<>(PIN);
+        Map<Integer, Button> buttons = getButtons();
+
+        while (!PIN_copy.isEmpty()) {
+            int pinNr = PIN_copy.poll();
+            buttons.get(pinNr).touchButton();
+        }
     }
 }
 

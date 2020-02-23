@@ -72,6 +72,7 @@ public class EventReader implements Runnable {
             Event event =  eventLines.size() > 3 ? getEvent(eventLines) : null;
             if (event != null) {
                 touchEvents.add(event);
+                // TODO: add reaction here. Maybe read image for success/failure/delete button.
                 Log.i("Event Reader", "Captured touch: " + event);
             } else {
                 Log.i("Event Reader", "Ignoring multi touch event!");
