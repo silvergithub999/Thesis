@@ -9,9 +9,9 @@ public final class CheckRoot {
         Process process = ProcessManagerService.getRootProcess();
         // TODO
         try {
-            process.getErrorStream().read();
+            // TODO: process.getErrorStream().read();
             return true;
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e("CheckRoot", "Error checking root access");
         }
         return false;

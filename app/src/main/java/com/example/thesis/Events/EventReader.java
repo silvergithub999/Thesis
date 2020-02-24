@@ -35,7 +35,9 @@ public class EventReader implements Runnable {
 
     public synchronized void doStop() {
         this.doStop = true;
-        rootProcess.destroy();
+        if (rootProcess != null) {
+            rootProcess.destroy();
+        }
         Log.i("Event Reader", "Stopped EventReader!");
     }
 

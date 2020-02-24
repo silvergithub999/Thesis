@@ -82,6 +82,6 @@ public abstract class Button {
         command.append(tapLocationY);
 
         Process process = ProcessManagerService.runRootCommand(command.toString());
-        process.destroy();
+        // process.destroy();
     }
 }

@@ -31,13 +31,28 @@ public class DatabaseService extends SQLiteOpenHelper {
     }
 
     public boolean insertData(int id, String value) {
+        if (getPIN(id) == null) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(ID, id);
+            contentValues.put(PIN, value);
+            long result = db.insert(TABLE_NAME, null, contentValues);
+            return result != -1;
+        } else {
+            return updateData(id, value);
+        }
+    }
+
+
+    private boolean updateData(int id, String value) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(ID, id);
         contentValues.put(PIN, value);
-        long result = db.insert(TABLE_NAME, null, contentValues);
-        return result != -1;
+        db.update(TABLE_NAME, contentValues, "id = ?", new String[]{Integer.toString(id)});
+        return true;
     }
+
 
     public String getPIN(int id) {
         // TODO: maybe use querybuilder.
@@ -46,10 +61,9 @@ public class DatabaseService extends SQLiteOpenHelper {
                 " where ID = " + id, null);
 
         if (result.getCount() != 0) {
-            StringBuffer stringBuffer = new StringBuffer();
             result.moveToNext();
-            return result.getString(1);
+            return result.getString(0);
         }
-        return "";
+        return null;
     }
 }

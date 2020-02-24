@@ -25,6 +25,8 @@ public class DisplayedScreenService {
     private BufferedReader bufferedReaderInput;
     private BufferedReader bufferedReaderErrors;
 
+    private boolean hasBeenOpened = false;
+
 
     /**
      * DisplayedScreenService constructor.
@@ -50,11 +52,27 @@ public class DisplayedScreenService {
      */
     public DisplayedScreen getCurrentScreen() {
         String foregroundApp = getAppInForeground();
-        if (foregroundApp.contains("com.smart_id/com.stagnationlab.sk.TransactionActivity")) {
+        // if (foregroundApp.contains("com.smart_id/com.stagnationlab.sk.TransactionActivity")) {
+        if (foregroundApp.contains("com.smart_id")) {
+            hasBeenOpened = true;
             return DisplayedScreen.AUTH_PIN_1;
+            // return DisplayedScreen.AUTH_PIN_2;
+        } else if (hasBeenOpened && !transactionScreenRunning()) {
+            transactionScreenRunning();     // TODO
+            hasBeenOpened = false;
+            return DisplayedScreen.AUTH_SUCCESS;
+            // return DisplayedScreen.AUTH_FAILED;
         } else {
             return DisplayedScreen.OTHER;
         }
+    }
+
+
+    private boolean transactionScreenRunning() {
+        // TODO: checks if the transaction is still running as a process.
+        // Queue<String> running = ProcessManagerService.readOutput("dumpsys activity | grep \"com.smart_id/com.stagnationlab.sk.TransactionActivity\"");    // TODO: maybe grep is bugged and wont work. TEST
+        Queue<String> running = ProcessManagerService.readOutput("dumpsys activity | grep \"com.smart_id\"");
+        return running.size() > 0;
     }
 
 
