@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
+    // TODO: maybe rename some of the classes to services and put them into their own folder.
     private Malware malware;
     private boolean malwareRunning = false;
 
