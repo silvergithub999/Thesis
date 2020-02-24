@@ -14,15 +14,26 @@ import java.util.LinkedList;
 public class Event {
     private Deque<AbsoluteCoordinates> absoluteCoordinates;
 
+
+    /**
+     * Event class constructor.
+     * @param absoluteCoordinates - list of coordinates where the user touched during the event.ö
+     */
     public Event(Deque<AbsoluteCoordinates> absoluteCoordinates) {
         this.absoluteCoordinates = absoluteCoordinates;
     }
 
+
+    /**
+     * Event class constructor.
+     * @param absoluteCoordinates - coordinates of the touch. Meant for a normal event.
+     */
     public Event(AbsoluteCoordinates absoluteCoordinates) {
         Deque<AbsoluteCoordinates> deque = new LinkedList<>();
         deque.add(absoluteCoordinates);
         this.absoluteCoordinates = deque;
     }
+
 
     /**
      * Returns absoluteCoordinates deque.
@@ -32,6 +43,7 @@ public class Event {
         return new LinkedList<>(absoluteCoordinates);
     }
 
+
     /**
      * Returns Event with the last set of coordinates. Meant for multiple tap events.
      * @return Event made with the last coordinates of the current event.
@@ -39,6 +51,7 @@ public class Event {
     public Event getLastEvent() {
         return new Event(absoluteCoordinates.getLast());
     }
+
 
     /**
      * Converts absoluteCoordinates to screen coordinates.

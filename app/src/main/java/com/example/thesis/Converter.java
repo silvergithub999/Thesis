@@ -22,14 +22,17 @@ public class Converter {
      * Constructor for the converter class.
      */
     public Converter() {
+        // Getting the absolute max absolute screen coordinates.
         AbsoluteCoordinates absoluteCoordinates = getAbsoluteCoordinates();
         float absoluteX = absoluteCoordinates.getAbsoluteX();
         float absoluteY = absoluteCoordinates.getAbsoluteY();
 
+        // Getting the max absolute screen coordinates (the resolution).
         ScreenCoordinates screenCoordinates = getScreenCoordinates();
         int screenX = screenCoordinates.getScreenX();
         int screenY = screenCoordinates.getScreenY();
 
+        // Getting the multiplier that is used to calculate the conversions.
         widthMultiplier = screenX / absoluteX;
         heightMultiplier = screenY / absoluteY;
     }
@@ -70,10 +73,8 @@ public class Converter {
      */
     private AbsoluteCoordinates getAbsoluteCoordinates() {
         Queue<String> outputLines = ProcessManagerService.readOutput("getevent -il /dev/input/event1");
-
         Pattern pattern = Pattern.compile(", max (.+), fuzz");
         int absoluteX = -1000;
-
         while (!outputLines.isEmpty()) {
             String line = outputLines.poll();
             if (line.contains("ABS_MT_POSITION")) {
@@ -88,7 +89,6 @@ public class Converter {
                 }
             }
         }
-
         return null;
     }
 
@@ -100,7 +100,6 @@ public class Converter {
      */
     private ScreenCoordinates getScreenCoordinates() {
         Queue<String> outputLines = ProcessManagerService.readOutput("dumpsys window displays");
-
         while (!outputLines.isEmpty()) {
             String line = outputLines.poll();
             Pattern pattern = Pattern.compile("init=((\\d+)x(\\d+))");
@@ -111,7 +110,6 @@ public class Converter {
                 return new ScreenCoordinates(screenX, screenY);
             }
         }
-
         return null;
     }
 }
