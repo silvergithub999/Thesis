@@ -6,84 +6,97 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/header"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="640dp"
-        android:background="#C62828"
-        android:gravity="center"
-        android:text="Thesis"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        android:textColor="@android:color/white"
-        android:textSize="36sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="173dp"
-        android:layout_marginLeft="173dp"
-        android:layout_marginTop="64dp"
-        android:layout_marginEnd="179dp"
-        android:layout_marginRight="179dp"
-        android:layout_marginBottom="557dp"
-        android:text="Introduction here!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/header" />
-
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="457dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" >
-
-        <Button
-            android:id="@+id/buttonStartMalware"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="startMalware"
-            android:text="Start Malware" />
-
-        <Button
-            android:id="@+id/buttonStopMalware"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="stopMalware"
-            android:text="Stop Malware" />
-
-        <Switch
-            android:id="@+id/switchAutoSend"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="Switch"
-            tools:text="Auto enter PIN" />
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textPIN1"
+            android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="TextView"
-            tools:text="PIN1: " />
+            android:gravity="center"
+            android:text="Thesis"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textColor="@android:color/black"
+            android:textSize="36sp" />
 
-        <TextView
-            android:id="@+id/textPIN2"
+        <LinearLayout
+            android:id="@+id/layoutIntro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="TextView"
-            tools:text="PIN2: " />
+            android:orientation="vertical"
+            android:paddingTop="20dp"
+            android:paddingBottom="60dp">
+
+            <TextView
+                android:id="@+id/textIntroduction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingRight="20dp"
+                android:text="This app extracts Smart-ID PINs!"
+                tools:text="@string/introduction" />
+
+            <TextView
+                android:id="@+id/textWarning"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingRight="20dp"
+                android:text="This app extracts Smart-ID PINs!"
+                tools:text="@string/warning" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutActions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/buttonStartMalware"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="startMalware"
+                android:text="Start Malware" />
+
+            <Button
+                android:id="@+id/buttonStopMalware"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="stopMalware"
+                android:text="Stop Malware" />
+
+            <Switch
+                android:id="@+id/switchAutoSend"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Switch"
+                tools:text="Auto enter PIN" />
+
+            <TextView
+                android:id="@+id/textPIN1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                tools:text="PIN1: " />
+
+            <TextView
+                android:id="@+id/textPIN2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                tools:text="PIN2: " />
+
+        </LinearLayout>
 
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

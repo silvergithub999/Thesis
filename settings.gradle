@@ -1,2 +1,2 @@
-include ':app', 'OpenCV_4.2.0_Library'
+include ':app'
 rootProject.name='Thesis'

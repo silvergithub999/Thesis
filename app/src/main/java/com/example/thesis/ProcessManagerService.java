@@ -32,6 +32,8 @@ public final class ProcessManagerService {
 
     /**
      * Creates a process with root privileges.
+     * Helpful:
+     * https://stackoverflow.com/questions/18570962/permission-denied-on-rooted-android-phone-with-getevent
      * @return a process with root privileges.
      */
     public static Process getRootProcess() {
