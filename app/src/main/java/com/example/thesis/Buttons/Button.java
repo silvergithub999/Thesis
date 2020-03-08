@@ -1,5 +1,7 @@
 package com.example.thesis.Buttons;
 
+import android.util.Log;
+
 import com.example.thesis.Converter;
 import com.example.thesis.Coordinates.ScreenCoordinates;
 import com.example.thesis.Events.Event;
@@ -82,6 +84,12 @@ public abstract class Button {
         command.append(tapLocationY);
 
         Process process = ProcessManagerService.runRootCommand(command.toString());
-        // process.destroy();
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {}
+
+        process.destroy();
+        Log.i("Button", "Pressed button " + getValue());
     }
 }

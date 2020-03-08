@@ -25,8 +25,6 @@ public class DisplayedScreenService {
     private BufferedReader bufferedReaderInput;
     private BufferedReader bufferedReaderErrors;
 
-    private boolean hasBeenOpened = false;
-
 
     /**
      * DisplayedScreenService constructor.
@@ -53,24 +51,19 @@ public class DisplayedScreenService {
     public DisplayedScreen getCurrentScreen() {
         String foregroundApp = getAppInForeground();
         if (foregroundApp.contains("com.smart_id/com.stagnationlab.sk.TransactionActivity")) {
-            hasBeenOpened = true;
-            return DisplayedScreen.AUTH_PIN_1;
-            // return DisplayedScreen.AUTH_PIN_2;
-        } else if (hasBeenOpened && !transactionScreenRunning()) {
-            transactionScreenRunning();     // TODO
-            hasBeenOpened = false;
-            return DisplayedScreen.AUTH_SUCCESS;
-            // return DisplayedScreen.AUTH_FAILED;
+            return DisplayedScreen.AUTH_PIN;
         } else {
             return DisplayedScreen.OTHER;
         }
     }
 
 
+    /**
+     * Checks if the transaction activity is still running, maybe the user changed to another app.
+     * @return true if transaction acitivity is still running, false if not.
+     */
     private boolean transactionScreenRunning() {
-        // TODO: checks if the transaction is still running as a process.
-        // Queue<String> running = ProcessManagerService.readOutput("dumpsys activity | grep \"com.smart_id/com.stagnationlab.sk.TransactionActivity\"");    // TODO: maybe grep is bugged and wont work. TEST
-        Queue<String> running = ProcessManagerService.readOutput("dumpsys activity | grep \"com.smart_id\"");
+        Queue<String> running = ProcessManagerService.readOutput("dumpsys activity | grep \"com.smart_id/com.stagnationlab.sk.TransactionActivity\"");    // TODO: maybe grep is bugged and wont work. TEST
         return running.size() > 0;
     }
 
@@ -99,7 +92,7 @@ public class DisplayedScreenService {
             if (i % 3 == 0 && i != 0) {
                 y += 322;
             }
-            buttons.put(i, new PinButton(i + 1, 280, 280, x_list[i % 3], y));
+            buttons.put(i + 1, new PinButton(i + 1, 280, 280, x_list[i % 3], y));
         }
         buttons.put(0, new PinButton(0, 280, 280, x_list[1], 2341));
 
@@ -140,6 +133,7 @@ public class DisplayedScreenService {
                         // Numpad button.
                         PIN.add(button.getValue());
                     }
+                    break;
                 }
             }
         }
@@ -160,17 +154,31 @@ public class DisplayedScreenService {
             buttons.get(pinNr).touchButton();
         }
     }
+
+
+    /**
+     * Takes a queue of a PIN and presses the delete button enough times to clear the length of the PIN.
+     * @param PIN - the PIN which needs to be cleared from the input.
+     *            TODO: Descritpion better
+     */
+    public void clearInputPIN(Queue<Integer> PIN) {
+        Map<Integer, Button> buttons = getButtons();
+        for (int i = 0; i < PIN.size(); i++) {
+            buttons.get(-500).touchButton();
+        }
+    }
 }
 
 /**
  * Holds different type of views that can exist.
  */
 enum DisplayedScreen {
-    AUTH_PIN_1,
-    AUTH_PIN_2,
-    AUTH_SUCCESS,
-    AUTH_FAILED,
+    AUTH_PIN,
     OTHER,
     // AUTH_PIN_1_FAILED,
     // AUTH_PIN_2_FAILED,
+    // AUTH_PIN_1,
+    // AUTH_PIN_2,
+    // AUTH_SUCCESS,
+    // AUTH_FAILED,
 }
