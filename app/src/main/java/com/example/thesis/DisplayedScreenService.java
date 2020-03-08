@@ -52,8 +52,7 @@ public class DisplayedScreenService {
      */
     public DisplayedScreen getCurrentScreen() {
         String foregroundApp = getAppInForeground();
-        // if (foregroundApp.contains("com.smart_id/com.stagnationlab.sk.TransactionActivity")) {
-        if (foregroundApp.contains("com.smart_id")) {
+        if (foregroundApp.contains("com.smart_id/com.stagnationlab.sk.TransactionActivity")) {
             hasBeenOpened = true;
             return DisplayedScreen.AUTH_PIN_1;
             // return DisplayedScreen.AUTH_PIN_2;
