@@ -8,7 +8,6 @@ import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
-    // TODO: maybe rename some of the classes to services and put them into their own folder.
     private Malware malware;
     private boolean malwareRunning = false;
 
@@ -20,18 +19,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         database = new DatabaseService(this);
-
         malware = new Malware(this, MainActivity.this, database);
-        getAndUpdatePIN(R.id.textPIN1, malware.getPIN1(), 1);
-        getAndUpdatePIN(R.id.textPIN2, malware.getPIN2(), 2);
+
+        // Updating the PIN numbers on screen.
+        malware.updateView(malware.getPIN1(), R.id.valuePIN1);
+        malware.updateView(malware.getPIN2(), R.id.valuePIN2);
     }
 
 
-    private void getAndUpdatePIN(int textViewId, String PIN, int id) {
-        malware.updateView(PIN, textViewId, id);
-    }
-
-
+    /**
+     * Checks if has root access and then starts the Malware class thread.
+     * @param view - view of app, since the function is called when the "START MALWARE" button is pressed.
+     */
     public void startMalware(View view) {
         if (CheckRoot.hasRootAccess()) {
             if (!malwareRunning) {
@@ -48,6 +47,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    /**
+     * Stops the Malware class thread.
+     * @param view - view of app, since the function is called when the "STOP MALWARE" button is pressed.
+     */
     public void stopMalware(View view) {
         malware.doStop();
         malwareRunning = false;
