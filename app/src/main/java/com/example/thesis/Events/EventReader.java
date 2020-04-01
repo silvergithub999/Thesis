@@ -104,7 +104,7 @@ public class EventReader implements Runnable {
      * @param bufferedReader - process inputstream bufferedreader where the captured events are sent.
      * @return queue of lines that are captured from "/dev/input/event1".
      */
-    public Queue<String> readEvent(BufferedReader bufferedReader) {
+    private Queue<String> readEvent(BufferedReader bufferedReader) {
         Queue<String> eventLines = new LinkedList<>();
         String endOfEvent = "000003  000071  177777  177777";
         try {
@@ -175,7 +175,7 @@ public class EventReader implements Runnable {
      * @param eventLines - lines captured from readEvent.
      * @return class Event object of the event that happened.
      */
-    public Event getEvent (Queue<String> eventLines) {
+    private Event getEvent (Queue<String> eventLines) {
         EventType eventType = checkEventType(new LinkedList(eventLines));
         if (eventType == EventType.NORMAL) {
             return getEventNORMAL(eventLines);
@@ -196,7 +196,7 @@ public class EventReader implements Runnable {
      * @param eventLines - lines captured from readEvent.
      * @return class Event object of the normal touch event that happened.
      */
-    public Event getEventNORMAL(Queue<String> eventLines) {
+    private Event getEventNORMAL(Queue<String> eventLines) {
         int absX = -1000, absY = -1000;
         while(!eventLines.isEmpty()) {
             String line = eventLines.poll();
@@ -221,7 +221,7 @@ public class EventReader implements Runnable {
      * @param eventLines - lines captured from readEvent.
      * @return class Event object of the multiple taps event that happened.
      */
-    public Event getEventMULTIPLE_TAPS(Queue<String> eventLines) {
+    private Event getEventMULTIPLE_TAPS(Queue<String> eventLines) {
         Event event = touchEvents.peek();
         return event.getLastEvent();
     }
@@ -233,8 +233,8 @@ public class EventReader implements Runnable {
      * @param eventLines - lines captured from readEvent.
      * @return class Event object of the dragging event that happened.
      */
-    public Event getEventDRAGGING(Queue<String> eventLines) {
-        // TODO: fix bug where if started dragging where previous touch was, then.
+    private Event getEventDRAGGING(Queue<String> eventLines) {
+        // TODO: fix bug where if started dragging where previous touch was, then there are no coordinates.
         Deque<AbsoluteCoordinates> absoluteCoordinates = new LinkedList<>();
 
         int absX = -1000, absY = -1000;

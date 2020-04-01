@@ -4,12 +4,19 @@ import android.util.Log;
 
 import java.io.IOException;
 
+/**
+ * This class handles checking if the app has access to root so it can work.
+ * TODO: Currently unfinished
+ */
 public final class CheckRoot {
+    /**
+     * Checks if the Process can access /system/bin/su.
+     * @return true if it can, false if not.
+     */
     public static boolean  hasRootAccess() {
-        Process process = ProcessManagerService.getRootProcess();
-        // TODO
+        // TODO: Unfinished!
+
         try {
-            // TODO: process.getErrorStream().read();
             return true;
         } catch (Exception e) {
             Log.e("CheckRoot", "Error checking root access");

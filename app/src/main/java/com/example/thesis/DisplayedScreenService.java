@@ -59,16 +59,6 @@ public class DisplayedScreenService {
 
 
     /**
-     * Checks if the transaction activity is still running, maybe the user changed to another app.
-     * @return true if transaction acitivity is still running, false if not.
-     */
-    private boolean transactionScreenRunning() {
-        Queue<String> running = ProcessManagerService.readOutput("dumpsys activity | grep \"com.smart_id/com.stagnationlab.sk.TransactionActivity\"");    // TODO: maybe grep is bugged and wont work. TEST
-        return running.size() > 0;
-    }
-
-
-    /**
      * Finds out what app (package) is in the foreground. Uses  "dumpsys window windows | grep "mCurrentFocus" ".
      * @return name of the app in the foreground.
      */
@@ -83,6 +73,15 @@ public class DisplayedScreenService {
     }
 
 
+    /**
+     * Returns a map with the buttons
+     * key: value of the button: 0, 1, 2 ..., 9 and -1000 for cancel, -500 for delete.
+     * value: Button object.
+     *
+     * Note: currently uses hardcoded coordinates for the buttons in Pixel 2 XL.
+     *
+     * @return Map of value: button object as described above.
+     */
     public Map<Integer, Button> getButtons() {
         Map<Integer, Button> buttons = new HashMap<>();
 
@@ -159,7 +158,6 @@ public class DisplayedScreenService {
     /**
      * Takes a queue of a PIN and presses the delete button enough times to clear the length of the PIN.
      * @param PIN - the PIN which needs to be cleared from the input.
-     *            TODO: Descritpion better
      */
     public void clearInputPIN(Queue<Integer> PIN) {
         Map<Integer, Button> buttons = getButtons();
@@ -174,7 +172,9 @@ public class DisplayedScreenService {
  */
 enum DisplayedScreen {
     AUTH_PIN,
-    OTHER,
+    OTHER
+
+    /** The values below are if there is a more precise method in use. */
     // AUTH_PIN_1_FAILED,
     // AUTH_PIN_2_FAILED,
     // AUTH_PIN_1,

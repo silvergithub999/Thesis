@@ -18,16 +18,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Thesis"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-            android:textColor="@android:color/black"
-            android:textSize="36sp" />
-
         <LinearLayout
             android:id="@+id/layoutIntro"
             android:layout_width="match_parent"
@@ -41,7 +31,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingRight="20dp"
-                android:text="This app extracts Smart-ID PINs!"
+                android:text="@string/introduction"
+                android:textAlignment="center"
                 tools:text="@string/introduction" />
 
             <TextView
@@ -49,7 +40,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingRight="20dp"
-                android:text="This app extracts Smart-ID PINs!"
+                android:text="@string/warning"
+                android:textAlignment="center"
                 tools:text="@string/warning" />
 
         </LinearLayout>
@@ -78,7 +70,7 @@
                 android:id="@+id/switchAutoSend"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Switch"
+                android:text="Auto enter PIN"
                 tools:text="Auto enter PIN" />
 
         </LinearLayout>
@@ -93,7 +85,7 @@
                 android:id="@+id/textPIN1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView"
+                android:text="PIN 1: "
                 tools:text="PIN 1: " />
 
             <TextView
@@ -101,7 +93,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="TextView"
                 tools:text="" />
 
         </LinearLayout>
@@ -116,7 +107,7 @@
                 android:id="@+id/textPIN2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView"
+                android:text="PIN 2: "
                 tools:text="PIN 2: " />
 
             <TextView
@@ -124,7 +115,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="TextView"
                 tools:text="" />
 
         </LinearLayout>
