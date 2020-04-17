@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
      * @param view - view of app, since the function is called when the "STOP MALWARE" button is pressed.
      */
     public void stopMalware(View view) {
+        // TODO: crashes when Smart-ID is running and the malware is stopped.
         malware.doStop();
         malwareRunning = false;
         Toast.makeText(this, "Stopped malware!", Toast.LENGTH_SHORT).show();

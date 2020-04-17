@@ -25,11 +25,17 @@ public class DisplayedScreenService {
     private BufferedReader bufferedReaderInput;
     private BufferedReader bufferedReaderErrors;
 
+    private Map<Integer, Button> buttons;
+
+    private final Converter converter;
+
 
     /**
      * DisplayedScreenService constructor.
      */
     public DisplayedScreenService() {
+        this.converter = new Converter();
+
         this.rootProcess = ProcessManagerService.getRootProcess();
         this.bufferedReaderInput = new BufferedReader(new InputStreamReader(rootProcess.getInputStream()));
         this.bufferedReaderErrors = new BufferedReader(new InputStreamReader(rootProcess.getErrorStream()));
@@ -51,6 +57,7 @@ public class DisplayedScreenService {
     public DisplayedScreen getCurrentScreen() {
         String foregroundApp = getAppInForeground();
         if (foregroundApp.contains("com.smart_id/com.stagnationlab.sk.TransactionActivity")) {
+            this.buttons = getButtons();
             return DisplayedScreen.AUTH_PIN;
         } else {
             return DisplayedScreen.OTHER;
@@ -82,12 +89,12 @@ public class DisplayedScreenService {
      *
      * @return Map of value: button object as described above.
      */
-    public Map<Integer, Button> getButtons() {
+    private Map<Integer, Button> getButtons() {
         Map<Integer, Button> buttons = new HashMap<>();
 
         // Pin buttons.
         int[] x_list = new int[]{202, 580, 958};
-        for (int i = 0, y = 1375; i <= 9; i++) {
+        for (int i = 0, y = 1375; i <= 8; i++) {
             if (i % 3 == 0 && i != 0) {
                 y += 322;
             }
@@ -111,9 +118,7 @@ public class DisplayedScreenService {
      */
     public Queue<Integer> extractPIN(Queue<Event> touchEvents) {
         Deque<Integer> PIN = new LinkedList<>();
-        Converter converter = new Converter();
 
-        Map<Integer, Button> buttons = getButtons();
         Set<Integer> buttonValues = buttons.keySet();
         while (!touchEvents.isEmpty()) {
             Event touchEvent = touchEvents.poll();
@@ -146,7 +151,6 @@ public class DisplayedScreenService {
      */
     public void sendPIN(Queue<Integer> PIN) {
         Queue<Integer> PIN_copy = new LinkedList<>(PIN);
-        Map<Integer, Button> buttons = getButtons();
 
         while (!PIN_copy.isEmpty()) {
             int pinNr = PIN_copy.poll();
@@ -160,10 +164,17 @@ public class DisplayedScreenService {
      * @param PIN - the PIN which needs to be cleared from the input.
      */
     public void clearInputPIN(Queue<Integer> PIN) {
-        Map<Integer, Button> buttons = getButtons();
         for (int i = 0; i < PIN.size(); i++) {
             buttons.get(-500).touchButton();
         }
+    }
+
+
+    /**
+     * Presses the Smart-ID Cancel button to end the transaction.
+     */
+    public void pressCancelButton() {
+        buttons.get(-1000).touchButton();
     }
 }
 

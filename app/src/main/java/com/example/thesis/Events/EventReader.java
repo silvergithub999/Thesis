@@ -222,7 +222,7 @@ public class EventReader implements Runnable {
      * @return class Event object of the multiple taps event that happened.
      */
     private Event getEventMULTIPLE_TAPS(Queue<String> eventLines) {
-        Event event = touchEvents.peek();
+        Event event = touchEvents.getLast();
         return event.getLastEvent();
     }
 
