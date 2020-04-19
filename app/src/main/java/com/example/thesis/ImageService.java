@@ -24,11 +24,11 @@
 //import java.util.Map;
 //import java.util.Set;
 //
-//// Note: Added .txt to end to remove the compilation warnings of the class because OpenCV library is removed.
-//
 ///**
 // * This class deals with OpenCV and image recognition.
-// * Currently not used.
+// * Currently not fully finished - right now it is able to find just the number buttons in the Smart-ID numpad.
+// * To use this the code needs to be uncommented and the OpenCV Android library would need to be added from:
+// * https://sourceforge.net/projects/opencvlibrary/files/opencv-android/
 // */
 //public class ImageService {
 //    private Process process;
@@ -63,7 +63,6 @@
 //        Log.i("PIN buttons", pinButtons.toString());
 //        Log.i("Other buttons", otherButtons.toString());
 //    }
-//
 //
 //
 //    public Map<Integer, Button> getPinButtonLocationsFromScreenshot(Map<Integer, Mat> pinImages, Mat screenShot) {
