@@ -4,8 +4,8 @@ import com.example.thesis.Converter;
 import com.example.thesis.Coordinates.AbsoluteCoordinates;
 import com.example.thesis.Coordinates.ScreenCoordinates;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.LinkedList;
 
 /**
  * The Event class holds coordinate of an event.
@@ -29,7 +29,7 @@ public class Event {
      * @param absoluteCoordinates - coordinates of the touch. Meant for a normal event.
      */
     public Event(AbsoluteCoordinates absoluteCoordinates) {
-        Deque<AbsoluteCoordinates> deque = new LinkedList<>();
+        Deque<AbsoluteCoordinates> deque = new ArrayDeque<>();
         deque.add(absoluteCoordinates);
         this.absoluteCoordinates = deque;
     }
@@ -40,7 +40,7 @@ public class Event {
      * @return copy of absoluteCoordinates.
      */
     public Deque<AbsoluteCoordinates> getAbsoluteCoordinates() {
-        return new LinkedList<>(absoluteCoordinates);
+        return new ArrayDeque<>(absoluteCoordinates);
     }
 
 
@@ -59,7 +59,7 @@ public class Event {
      * @return deque of screen coordinates of the event.
      */
     public Deque<ScreenCoordinates> getScreenCoordinates(Converter converter) {
-        return converter.convertAbsoluteToScreenCoordinates(new LinkedList(absoluteCoordinates));
+        return converter.convertAbsoluteToScreenCoordinates(new ArrayDeque<>(absoluteCoordinates));
     }
 
     @Override

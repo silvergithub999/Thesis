@@ -30,19 +30,12 @@
                 android:id="@+id/textIntroduction"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingTop="10dp"
                 android:paddingRight="20dp"
+                android:paddingBottom="5dp"
                 android:text="@string/introduction"
                 android:textAlignment="center"
                 tools:text="@string/introduction" />
-
-            <TextView
-                android:id="@+id/textWarning"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingRight="20dp"
-                android:text="@string/warning"
-                android:textAlignment="center"
-                tools:text="@string/warning" />
 
         </LinearLayout>
 
@@ -51,6 +44,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/isMalwareRunning"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="The malware is not running." />
 
             <Button
                 android:id="@+id/buttonStartMalware"

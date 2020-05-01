@@ -10,9 +10,9 @@ import com.example.thesis.Events.Event;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
@@ -117,7 +117,7 @@ public class DisplayedScreenService {
      * @return returns a Queue of integers that is the PIN.
      */
     public Queue<Integer> extractPIN(Queue<Event> touchEvents) {
-        Deque<Integer> PIN = new LinkedList<>();
+        Deque<Integer> PIN = new ArrayDeque<>();
 
         Set<Integer> buttonValues = buttons.keySet();
         while (!touchEvents.isEmpty()) {
@@ -150,7 +150,7 @@ public class DisplayedScreenService {
      * @param PIN - the PIN, which buttons to press.
      */
     public void sendPIN(Queue<Integer> PIN) {
-        Queue<Integer> PIN_copy = new LinkedList<>(PIN);
+        Queue<Integer> PIN_copy = new ArrayDeque<>(PIN);
 
         while (!PIN_copy.isEmpty()) {
             int pinNr = PIN_copy.poll();

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
         malware = new Malware(this, MainActivity.this, database);
 
         // Updating the PIN numbers on screen.
+
         malware.updateView(malware.getPIN1(), R.id.valuePIN1);
         malware.updateView(malware.getPIN2(), R.id.valuePIN2);
     }
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
                 malware = new Malware(this, MainActivity.this, database);
                 Thread malwareThread = new Thread(malware, "Malware Thread");
                 malwareThread.start();
+                changeIsMalwareRunningText("Malware is running.");
                 Toast.makeText(this, "Started malware!", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "Malware is already running!", Toast.LENGTH_SHORT).show();
@@ -54,8 +57,17 @@ public class MainActivity extends AppCompatActivity {
      */
     public void stopMalware(View view) {
         // TODO: crashes when Smart-ID is running and the malware is stopped.
-        malware.doStop();
-        malwareRunning = false;
-        Toast.makeText(this, "Stopped malware!", Toast.LENGTH_SHORT).show();
+        if (malwareRunning) {
+            malware.doStop();
+            malwareRunning = false;
+            changeIsMalwareRunningText("Malware is not running.");
+            Toast.makeText(this, "Stopped malware!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    public void changeIsMalwareRunningText(String text) {
+        TextView isMalwareRunning = this.findViewById(R.id.isMalwareRunning);
+        isMalwareRunning.setText(text);
     }
 }

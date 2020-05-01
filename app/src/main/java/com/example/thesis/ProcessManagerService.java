@@ -5,7 +5,7 @@ import android.util.Log;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.util.LinkedList;
+import java.util.ArrayDeque;
 import java.util.Queue;
 
 /**
@@ -72,7 +72,7 @@ public final class ProcessManagerService {
      * @return queue of the command output.
      */
     public static Queue<String> readOutput(String command) {
-        Queue<String> outputLines = new LinkedList<>();
+        Queue<String> outputLines = new ArrayDeque<>();
 
         Process process = getRootProcess();
         sendCommand(process, command);

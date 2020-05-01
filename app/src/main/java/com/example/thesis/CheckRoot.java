@@ -9,18 +9,23 @@ import java.io.IOException;
  * TODO: Currently unfinished
  */
 public final class CheckRoot {
+
     /**
      * Checks if the Process can access /system/bin/su.
      * @return true if it can, false if not.
      */
     public static boolean  hasRootAccess() {
         // TODO: Unfinished!
-
         try {
+            Process rootProcess = ProcessManagerService.getRootProcess();
+            if (rootProcess == null) {
+                return false;
+            }
             return true;
         } catch (Exception e) {
-            Log.e("CheckRoot", "Error checking root access");
+            Log.e("CheckRoot", "Error checking root access: " + e.getMessage());
+            return false;
         }
-        return false;
+
     }
 }

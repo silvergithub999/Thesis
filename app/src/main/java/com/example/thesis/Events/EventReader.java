@@ -7,8 +7,8 @@ import com.example.thesis.ProcessManagerService;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.LinkedList;
 import java.util.Queue;
 
 
@@ -24,7 +24,7 @@ public class EventReader implements Runnable {
      * Class constructor.
      */
     public EventReader() {
-        this.touchEvents = new LinkedList<>();
+        this.touchEvents = new ArrayDeque<>();
     }
 
 
@@ -105,7 +105,7 @@ public class EventReader implements Runnable {
      * @return queue of lines that are captured from "/dev/input/event1".
      */
     private Queue<String> readEvent(BufferedReader bufferedReader) {
-        Queue<String> eventLines = new LinkedList<>();
+        Queue<String> eventLines = new ArrayDeque<>();
         String endOfEvent = "000003  000071  177777  177777";
         try {
             // Reading lines.
@@ -176,7 +176,7 @@ public class EventReader implements Runnable {
      * @return class Event object of the event that happened.
      */
     private Event getEvent (Queue<String> eventLines) {
-        EventType eventType = checkEventType(new LinkedList(eventLines));
+        EventType eventType = checkEventType(new ArrayDeque(eventLines));
         if (eventType == EventType.NORMAL) {
             return getEventNORMAL(eventLines);
         } else if (eventType == EventType.MULTIPLE_TAPS) {
@@ -235,7 +235,7 @@ public class EventReader implements Runnable {
      */
     private Event getEventDRAGGING(Queue<String> eventLines) {
         // TODO: fix bug where if started dragging where previous touch was, then there are no coordinates.
-        Deque<AbsoluteCoordinates> absoluteCoordinates = new LinkedList<>();
+        Deque<AbsoluteCoordinates> absoluteCoordinates = new ArrayDeque<>();
 
         int absX = -1000, absY = -1000;
         boolean isX = false, isY = false;

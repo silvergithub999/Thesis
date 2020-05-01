@@ -3,8 +3,8 @@ package com.example.thesis;
 import com.example.thesis.Coordinates.AbsoluteCoordinates;
 import com.example.thesis.Coordinates.ScreenCoordinates;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.LinkedList;
 import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -58,7 +58,7 @@ public class Converter {
      * @return deque of converted ScreenCoordinates.
      */
     public Deque<ScreenCoordinates> convertAbsoluteToScreenCoordinates(Deque<AbsoluteCoordinates> absoluteCoordinates) {
-        Deque<ScreenCoordinates> screenCoordinates = new LinkedList<>();
+        Deque<ScreenCoordinates> screenCoordinates = new ArrayDeque<>();
         while(!absoluteCoordinates.isEmpty()) {
             screenCoordinates.add(convertAbsoluteToScreenCoordinates(absoluteCoordinates.poll()));
         }

