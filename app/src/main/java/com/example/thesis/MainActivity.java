@@ -34,7 +34,8 @@ public class MainActivity extends AppCompatActivity {
      * @param view - view of app, since the function is called when the "START MALWARE" button is pressed.
      */
     public void startMalware(View view) {
-        if (CheckRoot.hasRootAccess()) {
+        CheckRoot checkRoot = new CheckRoot(this);
+        if (checkRoot.suFileExists() && checkRoot.hasRootAccess()) {
             if (!malwareRunning) {
                 malwareRunning = true;
                 malware = new Malware(this, MainActivity.this, database);
