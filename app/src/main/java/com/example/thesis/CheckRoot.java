@@ -18,10 +18,7 @@ public final class CheckRoot {
         // TODO: Unfinished!
         try {
             Process rootProcess = ProcessManagerService.getRootProcess();
-            if (rootProcess == null) {
-                return false;
-            }
-            return true;
+            return rootProcess != null;
         } catch (Exception e) {
             Log.e("CheckRoot", "Error checking root access: " + e.getMessage());
             return false;
